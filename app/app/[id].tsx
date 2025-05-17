@@ -14,7 +14,7 @@ import { useRepositoryContext } from '@/context/RepositoryContext';
 import { ScreenshotGallery } from '@/components/ui/ScreenshotGallery';
 import { AppVersionCard } from '@/components/ui/AppVersionCard';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { App } from '@/types/repository';
+import { App, AppVersion } from '@/types/repository';
 import { ChevronLeft, Download } from 'lucide-react-native';
 import * as WebBrowser from 'expo-web-browser';
 
@@ -77,6 +77,20 @@ export default function AppDetailScreen() {
     );
   }
   
+  // Convert single version format to versions array format if needed
+  const appVersions: AppVersion[] = app.versions || (app.version ? [{
+    version: app.version,
+    date: app.versionDate || new Date().toISOString(),
+    size: app.size || 0,
+    downloadURL: app.downloadURL || '',
+    localizedDescription: app.versionDescription || ''
+  }] : []);
+  
+  // Convert screenshotURLs to screenshots format if needed
+  const screenshots = app.screenshots || (app.screenshotURLs ? 
+    app.screenshotURLs.map(url => ({ imageURL: url })) : 
+    []);
+  
   const toggleVersionExpand = (version: string) => {
     if (expandedVersion === version) {
       setExpandedVersion(null);
@@ -127,12 +141,14 @@ export default function AppDetailScreen() {
           </View>
         </View>
         
-        <View style={styles.screenshotSection}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-            Screenshots
-          </Text>
-          <ScreenshotGallery screenshots={app.screenshots} />
-        </View>
+        {(screenshots && Array.isArray(screenshots) && screenshots.length > 0) && (
+          <View style={styles.screenshotSection}>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+              Screenshots
+            </Text>
+            <ScreenshotGallery screenshots={screenshots} />
+          </View>
+        )}
         
         <View style={styles.descriptionSection}>
           <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
@@ -142,6 +158,27 @@ export default function AppDetailScreen() {
             {app.localizedDescription}
           </Text>
         </View>
+        
+        {app.permissions && app.permissions.length > 0 && (
+          <View style={styles.permissionsSection}>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+              App Permissions
+            </Text>
+            
+            {app.permissions.map((permission, index) => (
+              <View key={index} style={styles.permissionGroup}>
+                <Text style={[styles.permissionGroupTitle, { color: theme.colors.text }]}>
+                  {permission.type}
+                </Text>
+                <Text 
+                  style={[styles.permissionItem, { color: theme.colors.secondaryText }]}
+                >
+                  • {permission.usageDescription}
+                </Text>
+              </View>
+            ))}
+          </View>
+        )}
         
         {app.appPermissions && (
           <View style={styles.permissionsSection}>
@@ -185,21 +222,23 @@ export default function AppDetailScreen() {
           </View>
         )}
         
-        <View style={styles.versionsSection}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-            Versions
-          </Text>
-          
-          {app.versions.map((version, index) => (
-            <AppVersionCard
-              key={index}
-              version={version}
-              expanded={expandedVersion === version.version}
-              onToggleExpand={() => toggleVersionExpand(version.version)}
-              tintColor={app.tintColor}
-            />
-          ))}
-        </View>
+        {appVersions.length > 0 && (
+          <View style={styles.versionsSection}>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+              Versions
+            </Text>
+            
+            {appVersions.map((version, index) => (
+              <AppVersionCard
+                key={index}
+                version={version}
+                expanded={expandedVersion === version.version}
+                onToggleExpand={() => toggleVersionExpand(version.version)}
+                tintColor={app.tintColor}
+              />
+            ))}
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

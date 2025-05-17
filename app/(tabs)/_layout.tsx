@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Chrome as Home, Settings, Newspaper } from 'lucide-react-native';
+import { LayoutGrid as Home, Settings, Newspaper } from 'lucide-react-native';
 import { useThemeContext } from '@/context/ThemeContext';
 
 export default function TabLayout() {

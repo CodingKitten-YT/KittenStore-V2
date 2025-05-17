@@ -14,7 +14,8 @@ export const AppCard: React.FC<AppCardProps> = ({ app, repoTintColor }) => {
   const { theme } = useThemeContext();
   const router = useRouter();
   
-  const latestVersion = app.versions[0];
+  // Support both version formats
+  const version = app.version || (app.versions && app.versions.length > 0 ? app.versions[0].version : 'Unknown');
   const tintColor = app.tintColor || repoTintColor || theme.colors.primary;
   
   const handlePress = () => {
@@ -61,7 +62,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, repoTintColor }) => {
       
       <View style={styles.footer}>
         <Text style={[styles.version, { color: theme.colors.tertiaryText }]}>
-          Version {latestVersion.version}
+          Version {version}
         </Text>
       </View>
     </TouchableOpacity>

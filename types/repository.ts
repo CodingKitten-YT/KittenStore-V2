@@ -1,15 +1,18 @@
 export interface Repository {
   name: string;
-  subtitle: string;
-  description: string;
-  iconURL: string;
-  headerURL: string;
-  website: string;
-  tintColor: string;
-  featuredApps: string[];
+  identifier?: string;
+  sourceURL?: string;
+  subtitle?: string;
+  description?: string;
+  iconURL?: string;
+  headerURL?: string;
+  website?: string;
+  tintColor?: string;
+  featuredApps?: string[];
   apps: App[];
-  news: NewsItem[];
-  url: string; // URL where the repository was fetched from
+  news?: NewsItem[];
+  url?: string; // URL where the repository was fetched from
+  userInfo?: Record<string, any>;
 }
 
 export interface App {
@@ -19,9 +22,21 @@ export interface App {
   subtitle: string;
   localizedDescription: string;
   iconURL: string;
-  tintColor: string;
-  screenshots: Screenshot[] | ScreenshotsByDevice;
-  versions: AppVersion[];
+  tintColor?: string;
+  size?: number;
+  
+  // Handle both formats of screenshots
+  screenshots?: Screenshot[] | ScreenshotsByDevice;
+  screenshotURLs?: string[];
+  
+  // Handle both formats of versions
+  versions?: AppVersion[];
+  version?: string;
+  versionDate?: string;
+  versionDescription?: string;
+  downloadURL?: string;
+  
+  permissions?: AppPermission[];
   appPermissions?: AppPermissions;
 }
 
@@ -44,6 +59,11 @@ export interface AppVersion {
   localizedDescription: string;
   minOSVersion?: string;
   maxOSVersion?: string;
+}
+
+export interface AppPermission {
+  type: string;
+  usageDescription: string;
 }
 
 export interface AppPermissions {
