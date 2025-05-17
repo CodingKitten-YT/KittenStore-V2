@@ -61,27 +61,6 @@ export const AddRepositoryForm: React.FC<AddRepositoryFormProps> = ({ onClose })
       <View style={styles.form}>
         <View style={styles.inputContainer}>
           <Text style={[styles.label, { color: theme.colors.secondaryText }]}>
-            Repository Name (Optional)
-          </Text>
-          <TextInput
-            style={[
-              styles.input,
-              { 
-                color: theme.colors.text,
-                backgroundColor: theme.colors.searchBarBackground,
-                borderColor: theme.colors.border
-              }
-            ]}
-            placeholder="My Repository"
-            placeholderTextColor={theme.colors.tertiaryText}
-            value={name}
-            onChangeText={setName}
-            editable={!loading}
-          />
-        </View>
-        
-        <View style={styles.inputContainer}>
-          <Text style={[styles.label, { color: theme.colors.secondaryText }]}>
             Repository URL
           </Text>
           <TextInput
