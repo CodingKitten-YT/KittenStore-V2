@@ -61,12 +61,12 @@ export interface AppVersion {
   maxOSVersion?: string;
 }
 
-export interface AppPermission {
+interface AppPermission {
   type: string;
   usageDescription: string;
 }
 
-export interface AppPermissions {
+interface AppPermissions {
   entitlements?: string[];
   privacy?: Record<string, string>;
 }

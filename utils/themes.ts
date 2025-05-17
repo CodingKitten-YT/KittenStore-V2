@@ -42,7 +42,7 @@ export const darkTheme: Theme = {
 };
 
 // Use theme based on preference
-export const useTheme = (themePreference: ThemeType): Theme => {
+const useTheme = (themePreference: ThemeType): Theme => {
   const systemTheme = useColorScheme();
   
   if (themePreference === 'system') {
@@ -53,7 +53,7 @@ export const useTheme = (themePreference: ThemeType): Theme => {
 };
 
 // Common iOS styles
-export const shadowStyle = Platform.select({
+const shadowStyle = Platform.select({
   ios: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },

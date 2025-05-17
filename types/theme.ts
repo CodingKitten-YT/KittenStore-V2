@@ -1,6 +1,6 @@
 export type ThemeType = 'light' | 'dark' | 'system';
 
-export interface ThemeColors {
+interface ThemeColors {
   primary: string;
   background: string;
   card: string;
