@@ -4,10 +4,10 @@ import {
   View, 
   Text, 
   SafeAreaView, 
-  SectionList,
   ActivityIndicator,
   RefreshControl
 } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { useThemeContext } from '@/context/ThemeContext';
 import { useRepositoryContext } from '@/context/RepositoryContext';
 import { SearchBar } from '@/components/ui/SearchBar';
@@ -16,6 +16,12 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { App, Repository } from '@/types/repository';
 import { RefreshCw } from 'lucide-react-native';
 
+type AppWithRepo = { app: App; repo: Repository };
+
+type ListItem = 
+  | { type: 'header'; title: string }
+  | { type: 'item'; app: App; repo: Repository };
+
 export default function HomeScreen() {
   const { theme } = useThemeContext();
   const { repositories, loading, error, refreshRepositories } = useRepositoryContext();
@@ -23,13 +29,12 @@ export default function HomeScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   
-  // Filter apps based on search query
   const filteredApps = React.useMemo(() => {
     if (!searchQuery) return [];
-    
+
     const query = searchQuery.toLowerCase();
-    const apps: {app: App, repo: Repository}[] = [];
-    
+    const apps: AppWithRepo[] = [];
+
     repositories.forEach(repo => {
       repo.apps.forEach(app => {
         if (
@@ -38,53 +43,44 @@ export default function HomeScreen() {
           app.subtitle.toLowerCase().includes(query) ||
           app.localizedDescription.toLowerCase().includes(query)
         ) {
-          apps.push({app, repo});
+          apps.push({ app, repo });
         }
       });
     });
-    
+
     return apps;
   }, [repositories, searchQuery]);
-  
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await refreshRepositories();
     setRefreshing(false);
   }, [refreshRepositories]);
-  
-  // Create sections for section list
-  const sections = React.useMemo(() => {
+
+  const listData: ListItem[] = React.useMemo(() => {
+    const items: ListItem[] = [];
+
     if (searchQuery) {
-      // If searching, just show search results
-      return [
-        {
-          title: 'Search Results',
-          data: filteredApps,
-          renderItem: ({ item }: { item: {app: App, repo: Repository} }) => (
-            <AppCard app={item.app} repoTintColor={item.repo.tintColor} />
-          )
-        }
-      ];
-    }
-    
-    const sectionsData = [];
-    
-    // Apps by repository
-    repositories.forEach(repo => {
-      if (repo.apps.length > 0) {
-        sectionsData.push({
-          title: repo.name,
-          data: repo.apps,
-          renderItem: ({ item }: { item: App }) => (
-            <AppCard app={item} repoTintColor={repo.tintColor} />
-          )
+      if (filteredApps.length > 0) {
+        items.push({ type: 'header', title: 'Search Results' });
+        filteredApps.forEach(({ app, repo }) => {
+          items.push({ type: 'item', app, repo });
         });
       }
-    });
-    
-    return sectionsData;
+    } else {
+      repositories.forEach(repo => {
+        if (repo.apps.length > 0) {
+          items.push({ type: 'header', title: repo.name });
+          repo.apps.forEach(app => {
+            items.push({ type: 'item', app, repo });
+          });
+        }
+      });
+    }
+
+    return items;
   }, [repositories, searchQuery, filteredApps]);
-  
+
   if (loading && !refreshing && repositories.length === 0) {
     return (
       <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
@@ -95,7 +91,7 @@ export default function HomeScreen() {
       </View>
     );
   }
-  
+
   if (error && repositories.length === 0) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -111,7 +107,7 @@ export default function HomeScreen() {
       </SafeAreaView>
     );
   }
-  
+
   if (repositories.length === 0) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -122,7 +118,7 @@ export default function HomeScreen() {
       </SafeAreaView>
     );
   }
-  
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.header}>
@@ -130,27 +126,34 @@ export default function HomeScreen() {
           KittenStore
         </Text>
       </View>
-      
+
       <SearchBar
         value={searchQuery}
         onChangeText={setSearchQuery}
         onClear={() => setSearchQuery('')}
       />
-      
-      <SectionList
-        sections={sections}
-        keyExtractor={(item, index) => {
-          if ('bundleIdentifier' in item) return item.bundleIdentifier;
-          if ('identifier' in item) return item.identifier;
-          return index.toString();
+
+      <FlashList
+        data={listData}
+        estimatedItemSize={100}
+        keyExtractor={(item, index) =>
+          item.type === 'item' ? item.app.bundleIdentifier ?? index.toString() : `header-${index}`
+        }
+        renderItem={({ item }) => {
+          if (item.type === 'header') {
+            return (
+              <View style={[styles.sectionHeader, { backgroundColor: theme.colors.background }]}>
+                <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+                  {item.title}
+                </Text>
+              </View>
+            );
+          } else {
+            return (
+              <AppCard app={item.app} repoTintColor={item.repo.tintColor} />
+            );
+          }
         }}
-        renderSectionHeader={({ section }) => (
-          <View style={[styles.sectionHeader, { backgroundColor: theme.colors.background }]}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-              {section.title}
-            </Text>
-          </View>
-        )}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -159,7 +162,8 @@ export default function HomeScreen() {
           />
         }
         contentContainerStyle={styles.listContent}
-        stickySectionHeadersEnabled={true}
+        // Optional: add spacing between items
+        ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
       />
     </SafeAreaView>
   );

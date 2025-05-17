@@ -140,13 +140,18 @@ export default function SettingsScreen() {
               />
             </View>
           ) : (
-            repositories.map((repo, index) => (
-              <RepositoryCard
-                key={repo.url}
-                repository={repo}
-                onRemove={() => handleRemoveRepository(repo.url)}
-              />
-            ))
+            repositories.map((repo) => {
+              if (!repo.url) return null;
+            
+              return (
+                <RepositoryCard
+                  key={repo.url}
+                  repository={repo}
+                  onRemove={() => handleRemoveRepository(repo.url!)}
+                />
+              );
+            })
+            
           )}
         </View>
         

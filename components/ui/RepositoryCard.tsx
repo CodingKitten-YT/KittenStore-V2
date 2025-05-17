@@ -32,25 +32,21 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({
         Platform.OS === 'ios' && styles.iosShadow
       ]}
     >
-      <View style={styles.header}>
-        <Image
-          source={{ uri: repository.iconURL }}
-          style={styles.icon}
-          resizeMode="cover"
-        />
-        <View style={styles.titleContainer}>
-          <Text style={[styles.title, { color: theme.colors.text }]} numberOfLines={1}>
-            {repository.name}
-          </Text>
+      <View style={styles.textBlock}>
+        <Text style={[styles.title, { color: theme.colors.text }]} numberOfLines={1}>
+          {repository.name}
+        </Text>
+        {!!repository.subtitle && (
           <Text style={[styles.subtitle, { color: theme.colors.secondaryText }]} numberOfLines={1}>
             {repository.subtitle}
           </Text>
-        </View>
+        )}
+        {!!repository.description && (
+          <Text style={[styles.description, { color: theme.colors.secondaryText }]} numberOfLines={3}>
+            {repository.description}
+          </Text>
+        )}
       </View>
-      
-      <Text style={[styles.description, { color: theme.colors.secondaryText }]} numberOfLines={2}>
-        {repository.description}
-      </Text>
       
       {showActions && (
         <View style={styles.actions}>
@@ -103,19 +99,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  icon: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  titleContainer: {
-    flex: 1,
+  textBlock: {
+    marginBottom: 12,
   },
   title: {
     fontSize: 16,
@@ -124,14 +109,16 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
+    marginBottom: 6,
   },
   description: {
     fontSize: 14,
-    marginBottom: 16,
+    lineHeight: 20,
   },
   actions: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
+    gap: 8,
   },
   actionButton: {
     flexDirection: 'row',
@@ -140,9 +127,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 8,
     borderWidth: 1,
-    flex: 1,
-    marginHorizontal: 4,
-    justifyContent: 'center',
   },
   removeButton: {
     borderColor: '#FF3B30',

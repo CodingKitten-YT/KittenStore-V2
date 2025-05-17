@@ -79,6 +79,6 @@ export interface NewsItem {
   tintColor: string;
   imageURL: string;
   notify: boolean;
-  url?: string;
+  url: string;
   appID?: string;
 }
