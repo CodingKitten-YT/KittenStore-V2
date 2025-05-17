@@ -1,0 +1,298 @@
+import React, { useState } from 'react';
+import { 
+  StyleSheet, 
+  View, 
+  Text, 
+  SafeAreaView, 
+  FlatList,
+  TouchableOpacity,
+  Alert,
+  Modal,
+  Switch,
+  ScrollView
+} from 'react-native';
+import { useThemeContext } from '@/context/ThemeContext';
+import { useRepositoryContext } from '@/context/RepositoryContext';
+import { RepositoryCard } from '@/components/ui/RepositoryCard';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { AddRepositoryForm } from '@/components/ui/AddRepositoryForm';
+import { ThemeType } from '@/types/theme';
+import { PackagePlus, Moon, Sun, Smartphone } from 'lucide-react-native';
+
+export default function SettingsScreen() {
+  const { theme, themeType, setThemeType } = useThemeContext();
+  const { repositories, removeRepository } = useRepositoryContext();
+  
+  const [modalVisible, setModalVisible] = useState(false);
+  
+  const handleRemoveRepository = (url: string) => {
+    Alert.alert(
+      'Remove Repository',
+      'Are you sure you want to remove this repository?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: () => removeRepository(url),
+        },
+      ]
+    );
+  };
+  
+  return (
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <View style={styles.header}>
+        <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
+          Settings
+        </Text>
+      </View>
+      
+      <ScrollView style={styles.content}>
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+            Theme
+          </Text>
+          
+          <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
+            <TouchableOpacity
+              style={styles.settingItem}
+              onPress={() => setThemeType('light')}
+            >
+              <View style={styles.settingContent}>
+                <Sun size={20} color={theme.colors.text} style={styles.settingIcon} />
+                <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
+                  Light
+                </Text>
+              </View>
+              {themeType === 'light' && (
+                <View style={[styles.radioButton, { borderColor: theme.colors.primary }]}>
+                  <View style={[styles.radioButtonInner, { backgroundColor: theme.colors.primary }]} />
+                </View>
+              )}
+            </TouchableOpacity>
+            
+            <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
+            
+            <TouchableOpacity
+              style={styles.settingItem}
+              onPress={() => setThemeType('dark')}
+            >
+              <View style={styles.settingContent}>
+                <Moon size={20} color={theme.colors.text} style={styles.settingIcon} />
+                <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
+                  Dark
+                </Text>
+              </View>
+              {themeType === 'dark' && (
+                <View style={[styles.radioButton, { borderColor: theme.colors.primary }]}>
+                  <View style={[styles.radioButtonInner, { backgroundColor: theme.colors.primary }]} />
+                </View>
+              )}
+            </TouchableOpacity>
+            
+            <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
+            
+            <TouchableOpacity
+              style={styles.settingItem}
+              onPress={() => setThemeType('system')}
+            >
+              <View style={styles.settingContent}>
+                <Smartphone size={20} color={theme.colors.text} style={styles.settingIcon} />
+                <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
+                  System
+                </Text>
+              </View>
+              {themeType === 'system' && (
+                <View style={[styles.radioButton, { borderColor: theme.colors.primary }]}>
+                  <View style={[styles.radioButtonInner, { backgroundColor: theme.colors.primary }]} />
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+        
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+              Repositories
+            </Text>
+            <TouchableOpacity
+              style={[styles.addButton, { backgroundColor: theme.colors.primary }]}
+              onPress={() => setModalVisible(true)}
+            >
+              <PackagePlus size={20} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+          
+          {repositories.length === 0 ? (
+            <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
+              <EmptyState
+                title="No Repositories"
+                message="Add a repository to browse apps."
+                action={{
+                  label: 'Add Repository',
+                  onPress: () => setModalVisible(true)
+                }}
+              />
+            </View>
+          ) : (
+            repositories.map((repo, index) => (
+              <RepositoryCard
+                key={repo.url}
+                repository={repo}
+                onRemove={() => handleRemoveRepository(repo.url)}
+              />
+            ))
+          )}
+        </View>
+        
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
+            About
+          </Text>
+          
+          <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
+            <View style={styles.aboutItem}>
+              <Text style={[styles.aboutLabel, { color: theme.colors.secondaryText }]}>
+                Version
+              </Text>
+              <Text style={[styles.aboutValue, { color: theme.colors.text }]}>
+                1.0.0
+              </Text>
+            </View>
+            
+            <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
+            
+            <View style={styles.aboutItem}>
+              <Text style={[styles.aboutLabel, { color: theme.colors.secondaryText }]}>
+                Build
+              </Text>
+              <Text style={[styles.aboutValue, { color: theme.colors.text }]}>
+                2023.06.15
+              </Text>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+      
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <AddRepositoryForm onClose={() => setModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontFamily: 'Inter-Bold',
+  },
+  content: {
+    flex: 1,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontFamily: 'Inter-SemiBold',
+  },
+  addButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  card: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginHorizontal: 16,
+  },
+  settingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+  },
+  settingContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  settingIcon: {
+    marginRight: 12,
+  },
+  settingLabel: {
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+  },
+  separator: {
+    height: 1,
+    marginHorizontal: 16,
+  },
+  radioButton: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  radioButtonInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  aboutItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+  },
+  aboutLabel: {
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+  },
+  aboutValue: {
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 16,
+  },
+  modalContent: {
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+});
