@@ -1,125 +1,83 @@
 import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  SafeAreaView, 
-  FlatList,
+import {
+  StyleSheet,
+  View,
+  Text,
+  SafeAreaView,
+  ScrollView,
   TouchableOpacity,
   Alert,
   Modal,
-  Switch,
-  ScrollView
 } from 'react-native';
 import { useThemeContext } from '@/context/ThemeContext';
 import { useRepositoryContext } from '@/context/RepositoryContext';
 import { RepositoryCard } from '@/components/ui/RepositoryCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { AddRepositoryForm } from '@/components/ui/AddRepositoryForm';
-import { ThemeType } from '@/types/theme';
 import { PackagePlus, Moon, Sun, Smartphone } from 'lucide-react-native';
+import { ThemeType } from '@/types/theme';
 
 export default function SettingsScreen() {
   const { theme, themeType, setThemeType } = useThemeContext();
   const { repositories, removeRepository } = useRepositoryContext();
-  
+
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   const handleRemoveRepository = (url: string) => {
-    Alert.alert(
-      'Remove Repository',
-      'Are you sure you want to remove this repository?',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Remove',
-          style: 'destructive',
-          onPress: () => removeRepository(url),
-        },
-      ]
-    );
+    Alert.alert('Remove Repository', 'Are you sure you want to remove this repository?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Remove',
+        style: 'destructive',
+        onPress: () => removeRepository(url),
+      },
+    ]);
   };
-  
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
-          Settings
-        </Text>
+        <Text style={[styles.headerTitle, { color: theme.colors.text }]}>Settings</Text>
       </View>
-      
+
       <ScrollView style={styles.content}>
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-            Theme
-          </Text>
-          
-          <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
-            <TouchableOpacity
-              style={styles.settingItem}
-              onPress={() => setThemeType('light')}
-            >
-              <View style={styles.settingContent}>
-                <Sun size={20} color={theme.colors.text} style={styles.settingIcon} />
-                <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
-                  Light
-                </Text>
-              </View>
-              {themeType === 'light' && (
-                <View style={[styles.radioButton, { borderColor: theme.colors.primary }]}>
-                  <View style={[styles.radioButtonInner, { backgroundColor: theme.colors.primary }]} />
-                </View>
-              )}
-            </TouchableOpacity>
-            
-            <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
-            
-            <TouchableOpacity
-              style={styles.settingItem}
-              onPress={() => setThemeType('dark')}
-            >
-              <View style={styles.settingContent}>
-                <Moon size={20} color={theme.colors.text} style={styles.settingIcon} />
-                <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
-                  Dark
-                </Text>
-              </View>
-              {themeType === 'dark' && (
-                <View style={[styles.radioButton, { borderColor: theme.colors.primary }]}>
-                  <View style={[styles.radioButtonInner, { backgroundColor: theme.colors.primary }]} />
-                </View>
-              )}
-            </TouchableOpacity>
-            
-            <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
-            
-            <TouchableOpacity
-              style={styles.settingItem}
-              onPress={() => setThemeType('system')}
-            >
-              <View style={styles.settingContent}>
-                <Smartphone size={20} color={theme.colors.text} style={styles.settingIcon} />
-                <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
-                  System
-                </Text>
-              </View>
-              {themeType === 'system' && (
-                <View style={[styles.radioButton, { borderColor: theme.colors.primary }]}>
-                  <View style={[styles.radioButtonInner, { backgroundColor: theme.colors.primary }]} />
-                </View>
-              )}
-            </TouchableOpacity>
-          </View>
-        </View>
-        
+        {/* THEME */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-              Repositories
-            </Text>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Theme</Text>
+          </View>
+
+          <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
+            {(['light', 'dark', 'system'] as ThemeType[]).map((type) => {
+              const Icon = type === 'light' ? Sun : type === 'dark' ? Moon : Smartphone;
+              const label = type.charAt(0).toUpperCase() + type.slice(1);
+
+              return (
+                <React.Fragment key={type}>
+                  <TouchableOpacity style={styles.settingItem} onPress={() => setThemeType(type)}>
+                    <View style={styles.settingContent}>
+                      <Icon size={20} color={theme.colors.text} style={styles.settingIcon} />
+                      <Text style={[styles.settingLabel, { color: theme.colors.text }]}>{label}</Text>
+                    </View>
+                    {themeType === type && (
+                      <View style={[styles.radioButton, { borderColor: theme.colors.primary }]}>
+                        <View style={[styles.radioButtonInner, { backgroundColor: theme.colors.primary }]} />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                  {type !== 'system' && (
+                    <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </View>
+        </View>
+
+        {/* REPOSITORIES */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Repositories</Text>
             <TouchableOpacity
               style={[styles.addButton, { backgroundColor: theme.colors.primary }]}
               onPress={() => setModalVisible(true)}
@@ -127,22 +85,18 @@ export default function SettingsScreen() {
               <PackagePlus size={20} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
-          
+
           {repositories.length === 0 ? (
             <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
               <EmptyState
                 title="No Repositories"
                 message="Add a repository to browse apps."
-                action={{
-                  label: 'Add Repository',
-                  onPress: () => setModalVisible(true)
-                }}
+                action={{ label: 'Add Repository', onPress: () => setModalVisible(true) }}
               />
             </View>
           ) : (
             repositories.map((repo) => {
               if (!repo.url) return null;
-            
               return (
                 <RepositoryCard
                   key={repo.url}
@@ -151,45 +105,32 @@ export default function SettingsScreen() {
                 />
               );
             })
-            
           )}
         </View>
-        
+
+        {/* ABOUT */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-            About
-          </Text>
-          
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>About</Text>
+          </View>
+
           <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
             <View style={styles.aboutItem}>
-              <Text style={[styles.aboutLabel, { color: theme.colors.secondaryText }]}>
-                Version
-              </Text>
-              <Text style={[styles.aboutValue, { color: theme.colors.text }]}>
-                1.0.0
-              </Text>
+              <Text style={[styles.aboutLabel, { color: theme.colors.secondaryText }]}>Version</Text>
+              <Text style={[styles.aboutValue, { color: theme.colors.text }]}>1.0.0</Text>
             </View>
-            
+
             <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
-            
+
             <View style={styles.aboutItem}>
-              <Text style={[styles.aboutLabel, { color: theme.colors.secondaryText }]}>
-                Build
-              </Text>
-              <Text style={[styles.aboutValue, { color: theme.colors.text }]}>
-                2023.06.15
-              </Text>
+              <Text style={[styles.aboutLabel, { color: theme.colors.secondaryText }]}>Build</Text>
+              <Text style={[styles.aboutValue, { color: theme.colors.text }]}>2023.06.15</Text>
             </View>
           </View>
         </View>
       </ScrollView>
-      
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
+
+      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <AddRepositoryForm onClose={() => setModalVisible(false)} />
@@ -201,9 +142,7 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
   header: {
     paddingHorizontal: 16,
     paddingVertical: 12,
@@ -212,9 +151,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontFamily: 'Inter-Bold',
   },
-  content: {
-    flex: 1,
-  },
+  content: { flex: 1 },
   section: {
     marginBottom: 24,
   },

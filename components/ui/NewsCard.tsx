@@ -5,6 +5,13 @@ import { NewsItem } from '../../types/repository';
 import { ChevronRight, Star } from 'lucide-react-native';
 import { formatDate } from '../../utils/api';
 import * as WebBrowser from 'expo-web-browser';
+import { useRouter } from 'expo-router';
+
+// Normalize hex colors
+const normalizeColor = (color?: string): string | undefined => {
+  if (!color) return undefined;
+  return color.startsWith('#') ? color : `#${color}`;
+};
 
 interface NewsCardProps {
   news: NewsItem;
@@ -12,13 +19,19 @@ interface NewsCardProps {
 
 export const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
   const { theme } = useThemeContext();
-  
+  const tintColor = normalizeColor(news.tintColor) || theme.colors.primary;
+  const router = useRouter();
+
   const handlePress = async () => {
-    if (news.url) {
+    if (news.appID) {
+      // Push to the app detail page if appID is present
+      router.push(`/app/${news.appID}?source=${encodeURIComponent(news.url)}`);
+    } else if (news.url) {
+      // Fallback to opening in web browser
       await WebBrowser.openBrowserAsync(news.url);
     }
   };
-  
+
   return (
     <TouchableOpacity
       style={[
@@ -28,7 +41,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
       ]}
       onPress={handlePress}
       activeOpacity={0.7}
-      disabled={!news.url}
+      disabled={!news.url && !news.appID}
     >
       {news.imageURL ? (
         <Image
@@ -37,11 +50,11 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
           resizeMode="cover"
         />
       ) : null}
-      
+
       <View style={styles.content}>
         <View style={styles.header}>
           {news.notify && (
-            <View style={[styles.notifyBadge, { backgroundColor: news.tintColor || theme.colors.primary }]}>
+            <View style={[styles.notifyBadge, { backgroundColor: tintColor }]}>
               <Star size={12} color="#FFFFFF" />
             </View>
           )}
@@ -49,21 +62,21 @@ export const NewsCard: React.FC<NewsCardProps> = ({ news }) => {
             {formatDate(news.date)}
           </Text>
         </View>
-        
+
         <Text style={[styles.title, { color: theme.colors.text }]}>
           {news.title}
         </Text>
-        
+
         <Text style={[styles.caption, { color: theme.colors.secondaryText }]} numberOfLines={3}>
           {news.caption}
         </Text>
-        
-        {news.url && (
+
+        {(news.url || news.appID) && (
           <View style={styles.footer}>
-            <Text style={[styles.readMore, { color: news.tintColor || theme.colors.primary }]}>
-              Read More
+            <Text style={[styles.readMore, { color: tintColor }]}>
+              {news.appID ? 'View App' : 'Read More'}
             </Text>
-            <ChevronRight size={16} color={news.tintColor || theme.colors.primary} />
+            <ChevronRight size={16} color={tintColor} />
           </View>
         )}
       </View>

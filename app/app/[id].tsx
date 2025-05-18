@@ -143,9 +143,6 @@ export default function AppDetailScreen() {
         
         {(screenshots && Array.isArray(screenshots) && screenshots.length > 0) && (
           <View style={styles.screenshotSection}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
-              Screenshots
-            </Text>
             <ScreenshotGallery screenshots={screenshots} />
           </View>
         )}
@@ -339,7 +336,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-SemiBold',
   },
   screenshotSection: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 20,
