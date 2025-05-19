@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { 
   StyleSheet, 
   View, 
@@ -15,7 +15,6 @@ import { AppCard } from '@/components/ui/AppCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { App, Repository } from '@/types/repository';
 import { RefreshCw } from 'lucide-react-native';
-import { useFocusEffect } from 'expo-router';
 
 type AppWithRepo = { app: App; repo: Repository };
 
@@ -29,10 +28,6 @@ export default function HomeScreen() {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  
-  // Refs for scroll position management
-  const listRef = useRef<FlashList<ListItem>>(null);
-  const scrollPosition = useRef(0);
   
   const filteredApps = React.useMemo(() => {
     if (!searchQuery) return [];
@@ -85,26 +80,6 @@ export default function HomeScreen() {
 
     return items;
   }, [repositories, searchQuery, filteredApps]);
-
-  // Save scroll position when leaving the screen
-  const handleScroll = useCallback((event: { nativeEvent: { contentOffset: { y: number } } }) => {
-    scrollPosition.current = event.nativeEvent.contentOffset.y;
-  }, []);
-
-  // Restore scroll position when returning to the screen
-  useFocusEffect(
-    useCallback(() => {
-      if (listRef.current && scrollPosition.current > 0) {
-        // Use a small timeout to ensure the list has rendered
-        setTimeout(() => {
-          listRef.current?.scrollToOffset({
-            offset: scrollPosition.current,
-            animated: false
-          });
-        }, 50);
-      }
-    }, [])
-  );
 
   if (loading && !refreshing && repositories.length === 0) {
     return (
@@ -159,10 +134,8 @@ export default function HomeScreen() {
       />
 
       <FlashList
-        ref={listRef}
         data={listData}
         estimatedItemSize={100}
-        onScroll={handleScroll}
         keyExtractor={(item, index) =>
           item.type === 'item' ? item.app.bundleIdentifier ?? index.toString() : `header-${index}`
         }
@@ -189,6 +162,7 @@ export default function HomeScreen() {
           />
         }
         contentContainerStyle={styles.listContent}
+        // Optional: add spacing between items
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
       />
     </SafeAreaView>
