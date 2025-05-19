@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   StyleSheet, 
   View, 
@@ -17,6 +17,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { App, AppVersion } from '@/types/repository';
 import { ChevronLeft, Download } from 'lucide-react-native';
 import * as WebBrowser from 'expo-web-browser';
+import { getStoredDownloadOption } from '@/utils/storage';
+import { DOWNLOAD_OPTIONS } from '@/types/theme';
 
 export default function AppDetailScreen() {
   const { theme } = useThemeContext();
@@ -25,6 +27,11 @@ export default function AppDetailScreen() {
   const params = useLocalSearchParams();
   
   const [expandedVersion, setExpandedVersion] = useState<string | null>(null);
+  const [downloadOption, setDownloadOption] = useState('default');
+
+  useEffect(() => {
+    getStoredDownloadOption().then(setDownloadOption);
+  }, []);
   
   // Try to get app from parameters or find in repositories
   let app: App | undefined;
@@ -47,6 +54,16 @@ export default function AppDetailScreen() {
       }
     }
   }
+
+  const handleDownload = async () => {
+    if (!app.downloadURL) return;
+    
+    const option = DOWNLOAD_OPTIONS.find(opt => opt.id === downloadOption);
+    if (!option) return;
+
+    const url = option.getUrl(app.downloadURL);
+    await WebBrowser.openBrowserAsync(url);
+  };
   
   if (!app) {
     return (
@@ -132,6 +149,7 @@ export default function AppDetailScreen() {
                 styles.downloadButton,
                 { backgroundColor: app.tintColor || theme.colors.primary }
               ]}
+              onPress={handleDownload}
             >
               <Download size={18} color="#FFFFFF" style={styles.downloadIcon} />
               <Text style={styles.downloadText}>
