@@ -6,10 +6,16 @@ import {
   Image,
   TouchableOpacity,
   Platform,
+  Dimensions,
 } from 'react-native';
 import { useThemeContext } from '../../context/ThemeContext';
 import { App } from '../../types/repository';
 import { useRouter } from 'expo-router';
+import { Download } from 'lucide-react-native';
+
+const { width } = Dimensions.get('window');
+const CARD_MARGIN = 8;
+const CARD_WIDTH = width - (CARD_MARGIN * 4);
 
 interface AppCardProps {
   app: App;
@@ -39,30 +45,55 @@ export const AppCard: React.FC<AppCardProps> = ({ app, repoTintColor }) => {
         Platform.OS === 'ios' && styles.iosShadow,
       ]}
       onPress={handlePress}
-      activeOpacity={0.8}
+      activeOpacity={0.7}
     >
-      <View style={styles.header}>
-        <Image source={{ uri: app.iconURL }} style={styles.icon} resizeMode="cover" />
-        <View style={styles.titleContainer}>
-          <Text style={[styles.title, { color: theme.colors.text }]} numberOfLines={1}>
-            {app.name}
-          </Text>
-          <Text style={[styles.developer, { color: theme.colors.secondaryText }]} numberOfLines={1}>
-            {app.developerName}
-          </Text>
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <Image 
+            source={{ uri: app.iconURL }} 
+            style={[
+              styles.icon,
+              Platform.OS === 'ios' && styles.iconShadow
+            ]} 
+            resizeMode="cover" 
+          />
+          <View style={styles.titleContainer}>
+            <Text style={[styles.title, { color: theme.colors.text }]} numberOfLines={1}>
+              {app.name}
+            </Text>
+            <Text style={[styles.developer, { color: theme.colors.secondaryText }]} numberOfLines={1}>
+              {app.developerName}
+            </Text>
+          </View>
+          <TouchableOpacity 
+            style={[styles.downloadButton, { backgroundColor: tintColor }]}
+            onPress={handlePress}
+          >
+            <Download size={20} color="#FFFFFF" />
+          </TouchableOpacity>
         </View>
-      </View>
 
-      {!!app.subtitle && (
-        <Text style={[styles.subtitle, { color: theme.colors.secondaryText }]} numberOfLines={2}>
-          {app.subtitle}
-        </Text>
-      )}
+        {!!app.subtitle && (
+          <Text 
+            style={[styles.subtitle, { color: theme.colors.secondaryText }]} 
+            numberOfLines={2}
+          >
+            {app.subtitle}
+          </Text>
+        )}
 
-      <View style={styles.footer}>
-        <Text style={[styles.version, { color: theme.colors.tertiaryText }]}>
-          Version {version}
-        </Text>
+        <View style={styles.footer}>
+          <View 
+            style={[
+              styles.versionBadge, 
+              { backgroundColor: theme.dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }
+            ]}
+          >
+            <Text style={[styles.version, { color: theme.colors.secondaryText }]}>
+              v{version}
+            </Text>
+          </View>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -70,49 +101,86 @@ export const AppCard: React.FC<AppCardProps> = ({ app, repoTintColor }) => {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 10, // tighter spacing between cards
-    marginHorizontal: 16,
+    width: CARD_WIDTH,
+    marginHorizontal: CARD_MARGIN,
+    marginVertical: CARD_MARGIN,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  content: {
+    padding: 16,
   },
   iosShadow: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: 12,
   },
   icon: {
-    width: 48,
-    height: 48,
-    borderRadius: 10,
-    marginRight: 12,
+    width: 56,
+    height: 56,
+    borderRadius: 14,
+  },
+  iconShadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   titleContainer: {
     flex: 1,
+    marginLeft: 12,
+    marginRight: 8,
   },
   title: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 2,
+    fontSize: 17,
+    fontFamily: 'Inter-SemiBold',
+    marginBottom: 4,
   },
   developer: {
-    fontSize: 13,
+    fontSize: 14,
+    fontFamily: 'Inter-Regular',
   },
   subtitle: {
-    fontSize: 13,
-    marginBottom: 6,
+    fontSize: 15,
+    fontFamily: 'Inter-Regular',
+    lineHeight: 20,
+    marginBottom: 12,
   },
   footer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  versionBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
   },
   version: {
     fontSize: 12,
+    fontFamily: 'Inter-Medium',
+  },
+  downloadButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
 });
