@@ -19,23 +19,23 @@ import { ChevronLeft, Download } from 'lucide-react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { getStoredDownloadOption } from '@/utils/storage';
 import { DOWNLOAD_OPTIONS } from '@/types/theme';
+import { Linking } from 'react-native';
 
 export default function AppDetailScreen() {
   const { theme } = useThemeContext();
   const { repositories } = useRepositoryContext();
   const router = useRouter();
   const params = useLocalSearchParams();
-  
+
   const [expandedVersion, setExpandedVersion] = useState<string | null>(null);
   const [downloadOption, setDownloadOption] = useState('default');
 
   useEffect(() => {
     getStoredDownloadOption().then(setDownloadOption);
   }, []);
-  
-  // Try to get app from parameters or find in repositories
+
   let app: App | undefined;
-  
+
   if (params.app && typeof params.app === 'string') {
     try {
       app = JSON.parse(params.app) as App;
@@ -43,9 +43,8 @@ export default function AppDetailScreen() {
       console.error('Failed to parse app data:', e);
     }
   }
-  
+
   if (!app && params.id && typeof params.id === 'string') {
-    // Try to find app in repositories
     for (const repo of repositories) {
       const foundApp = repo.apps.find(a => a.bundleIdentifier === params.id);
       if (foundApp) {
@@ -55,16 +54,29 @@ export default function AppDetailScreen() {
     }
   }
 
-  const handleDownload = async () => {
-    if (!app.downloadURL) return;
-    
+  const getDownloadUrl = (url: string) => {
     const option = DOWNLOAD_OPTIONS.find(opt => opt.id === downloadOption);
-    if (!option) return;
-
-    const url = option.getUrl(app.downloadURL);
-    await WebBrowser.openBrowserAsync(url);
+    return option ? option.getUrl(url) : url;
   };
-  
+
+  // Update parameter to accept string | undefined
+  const handleDownload = async (url: string | undefined) => {
+    if (!url) return;
+
+    const formattedUrl = getDownloadUrl(url);
+
+    try {
+      const canOpen = await Linking.canOpenURL(formattedUrl);
+      if (canOpen) {
+        await Linking.openURL(formattedUrl);
+      } else {
+        await WebBrowser.openBrowserAsync(url);
+      }
+    } catch (e) {
+      console.error('Failed to open URL:', e);
+    }
+  };
+
   if (!app) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
@@ -93,8 +105,7 @@ export default function AppDetailScreen() {
       </SafeAreaView>
     );
   }
-  
-  // Convert single version format to versions array format if needed
+
   const appVersions: AppVersion[] = app.versions || (app.version ? [{
     version: app.version,
     date: app.versionDate || new Date().toISOString(),
@@ -102,20 +113,32 @@ export default function AppDetailScreen() {
     downloadURL: app.downloadURL || '',
     localizedDescription: app.versionDescription || ''
   }] : []);
-  
-  // Convert screenshotURLs to screenshots format if needed
-  const screenshots = app.screenshots || (app.screenshotURLs ? 
-    app.screenshotURLs.map(url => ({ imageURL: url })) : 
-    []);
-  
-  const toggleVersionExpand = (version: string) => {
-    if (expandedVersion === version) {
-      setExpandedVersion(null);
+
+  // Normalize screenshots into an array
+  let screenshots: Array<{ imageURL: string }> = [];
+  if (app.screenshots) {
+    if (Array.isArray(app.screenshots)) {
+      screenshots = app.screenshots;
     } else {
-      setExpandedVersion(version);
+      const processDeviceScreenshots = (deviceScreenshots: (string | { imageURL: string })[]) => {
+        return deviceScreenshots.map(s => typeof s === 'string' ? { imageURL: s } : s);
+      };
+      const byDevice = app.screenshots;
+      if (byDevice.iphone) {
+        screenshots = screenshots.concat(processDeviceScreenshots(byDevice.iphone));
+      }
+      if (byDevice.ipad) {
+        screenshots = screenshots.concat(processDeviceScreenshots(byDevice.ipad));
+      }
     }
+  } else if (app.screenshotURLs) {
+    screenshots = app.screenshotURLs.map(url => ({ imageURL: url }));
+  }
+
+  const toggleVersionExpand = (version: string) => {
+    setExpandedVersion(expandedVersion === version ? null : version);
   };
-  
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.header}>
@@ -129,7 +152,7 @@ export default function AppDetailScreen() {
           {app.name}
         </Text>
       </View>
-      
+
       <ScrollView style={styles.scrollView}>
         <View style={styles.appHeader}>
           <Image
@@ -149,7 +172,8 @@ export default function AppDetailScreen() {
                 styles.downloadButton,
                 { backgroundColor: app.tintColor || theme.colors.primary }
               ]}
-              onPress={handleDownload}
+              // Check if downloadURL exists before calling handleDownload
+              onPress={() => app?.downloadURL && handleDownload(app.downloadURL)}
             >
               <Download size={18} color="#FFFFFF" style={styles.downloadIcon} />
               <Text style={styles.downloadText}>
@@ -158,13 +182,13 @@ export default function AppDetailScreen() {
             </TouchableOpacity>
           </View>
         </View>
-        
-        {(screenshots && Array.isArray(screenshots) && screenshots.length > 0) && (
+
+        {screenshots.length > 0 && (
           <View style={styles.screenshotSection}>
             <ScreenshotGallery screenshots={screenshots} />
           </View>
         )}
-        
+
         <View style={styles.descriptionSection}>
           <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
             Description
@@ -173,40 +197,37 @@ export default function AppDetailScreen() {
             {app.localizedDescription}
           </Text>
         </View>
-        
+
         {app.permissions && app.permissions.length > 0 && (
           <View style={styles.permissionsSection}>
             <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
               App Permissions
             </Text>
-            
             {app.permissions.map((permission, index) => (
               <View key={index} style={styles.permissionGroup}>
                 <Text style={[styles.permissionGroupTitle, { color: theme.colors.text }]}>
                   {permission.type}
                 </Text>
-                <Text 
-                  style={[styles.permissionItem, { color: theme.colors.secondaryText }]}
-                >
+                <Text style={[styles.permissionItem, { color: theme.colors.secondaryText }]}>
                   • {permission.usageDescription}
                 </Text>
               </View>
             ))}
           </View>
         )}
-        
+
         {app.appPermissions && (
           <View style={styles.permissionsSection}>
             <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
               App Permissions
             </Text>
-            
-            {app.appPermissions.entitlements && app.appPermissions.entitlements.length > 0 && (
+
+            {(app.appPermissions.entitlements?.length ?? 0) > 0 && (
               <View style={styles.permissionGroup}>
                 <Text style={[styles.permissionGroupTitle, { color: theme.colors.text }]}>
                   Entitlements
                 </Text>
-                {app.appPermissions.entitlements.map((entitlement, index) => (
+                {app.appPermissions.entitlements?.map((entitlement, index) => (
                   <Text 
                     key={index}
                     style={[styles.permissionItem, { color: theme.colors.secondaryText }]}
@@ -216,7 +237,7 @@ export default function AppDetailScreen() {
                 ))}
               </View>
             )}
-            
+
             {app.appPermissions.privacy && Object.keys(app.appPermissions.privacy).length > 0 && (
               <View style={styles.permissionGroup}>
                 <Text style={[styles.permissionGroupTitle, { color: theme.colors.text }]}>
@@ -236,13 +257,12 @@ export default function AppDetailScreen() {
             )}
           </View>
         )}
-        
+
         {appVersions.length > 0 && (
           <View style={styles.versionsSection}>
             <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
               Versions
             </Text>
-            
             {appVersions.map((version, index) => (
               <AppVersionCard
                 key={index}
@@ -250,6 +270,7 @@ export default function AppDetailScreen() {
                 expanded={expandedVersion === version.version}
                 onToggleExpand={() => toggleVersionExpand(version.version)}
                 tintColor={app.tintColor}
+                onDownload={() => handleDownload(version.downloadURL)}
               />
             ))}
           </View>

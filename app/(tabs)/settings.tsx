@@ -51,6 +51,72 @@ export default function SettingsScreen() {
       </View>
 
       <ScrollView style={styles.content}>
+        {/* REPOSITORIES */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Repositories</Text>
+            <TouchableOpacity
+              style={[styles.addButton, { backgroundColor: theme.colors.primary }]}
+              onPress={() => setModalVisible(true)}
+            >
+              <PackagePlus size={20} color="#FFFFFF" />
+            </TouchableOpacity>
+          </View>
+
+          {repositories.length === 0 ? (
+            <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
+              <EmptyState
+                title="No Repositories"
+                message="Add a repository to browse apps."
+                action={{ label: 'Add Repository', onPress: () => setModalVisible(true) }}
+              />
+            </View>
+          ) : (
+            repositories.map((repo) => {
+              if (!repo.url) return null;
+              return (
+                <RepositoryCard
+                  key={repo.url}
+                  repository={repo}
+                  onRemove={() => handleRemoveRepository(repo.url!)}
+                />
+              );
+            })
+          )}
+        </View>
+
+        {/* DOWNLOAD OPTIONS */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Download Method</Text>
+          </View>
+
+          <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
+            {DOWNLOAD_OPTIONS.map((option, index) => (
+              <React.Fragment key={option.id}>
+                <TouchableOpacity
+                  style={styles.settingItem}
+                  onPress={() => handleDownloadOptionChange(option.id)}
+                >
+                  <View style={styles.settingContent}>
+                    <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
+                      {option.label}
+                    </Text>
+                  </View>
+                  {selectedDownloadOption === option.id && (
+                    <View style={[styles.radioButton, { borderColor: theme.colors.primary }]}>
+                      <View style={[styles.radioButtonInner, { backgroundColor: theme.colors.primary }]} />
+                    </View>
+                  )}
+                </TouchableOpacity>
+                {index < DOWNLOAD_OPTIONS.length - 1 && (
+                  <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
+                )}
+              </React.Fragment>
+            ))}
+          </View>
+        </View>
+
         {/* THEME */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
@@ -117,72 +183,6 @@ export default function SettingsScreen() {
               </React.Fragment>
             ))}
           </View>
-        </View>
-
-        {/* DOWNLOAD OPTIONS */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Download Method</Text>
-          </View>
-
-          <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
-            {DOWNLOAD_OPTIONS.map((option, index) => (
-              <React.Fragment key={option.id}>
-                <TouchableOpacity
-                  style={styles.settingItem}
-                  onPress={() => handleDownloadOptionChange(option.id)}
-                >
-                  <View style={styles.settingContent}>
-                    <Text style={[styles.settingLabel, { color: theme.colors.text }]}>
-                      {option.label}
-                    </Text>
-                  </View>
-                  {selectedDownloadOption === option.id && (
-                    <View style={[styles.radioButton, { borderColor: theme.colors.primary }]}>
-                      <View style={[styles.radioButtonInner, { backgroundColor: theme.colors.primary }]} />
-                    </View>
-                  )}
-                </TouchableOpacity>
-                {index < DOWNLOAD_OPTIONS.length - 1 && (
-                  <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
-                )}
-              </React.Fragment>
-            ))}
-          </View>
-        </View>
-
-        {/* REPOSITORIES */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>Repositories</Text>
-            <TouchableOpacity
-              style={[styles.addButton, { backgroundColor: theme.colors.primary }]}
-              onPress={() => setModalVisible(true)}
-            >
-              <PackagePlus size={20} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
-
-          {repositories.length === 0 ? (
-            <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
-              <EmptyState
-                title="No Repositories"
-                message="Add a repository to browse apps."
-                action={{ label: 'Add Repository', onPress: () => setModalVisible(true) }}
-              />
-            </View>
-          ) : (
-            repositories.map((repo) => {
-              if (!repo.url) return null;
-              return (
-                <RepositoryCard
-                  key={repo.url}
-                  repository={repo}
-                  onRemove={() => handleRemoveRepository(repo.url!)}
-                />
-              );
-            })
-          )}
         </View>
 
         {/* ABOUT */}

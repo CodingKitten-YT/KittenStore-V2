@@ -10,25 +10,27 @@ interface AppVersionCardProps {
   expanded?: boolean;
   onToggleExpand?: () => void;
   tintColor?: string;
+  onDownload?: () => void;  // <-- Added this line
 }
 
-export const AppVersionCard: React.FC<AppVersionCardProps> = ({ 
-  version, 
+export const AppVersionCard: React.FC<AppVersionCardProps> = ({
+  version,
   expanded = false,
   onToggleExpand,
-  tintColor 
+  tintColor,
+  onDownload,  // <-- Added this here
 }) => {
   const { theme } = useThemeContext();
   const color = tintColor || theme.colors.primary;
-  
+
   return (
     <View
       style={[
         styles.container,
-        { 
+        {
           backgroundColor: theme.colors.cardBackground,
-          borderColor: theme.colors.border
-        }
+          borderColor: theme.colors.border,
+        },
       ]}
     >
       <TouchableOpacity
@@ -44,14 +46,15 @@ export const AppVersionCard: React.FC<AppVersionCardProps> = ({
             {formatDate(version.date)}
           </Text>
         </View>
-        
+
         <View style={styles.actions}>
           <TouchableOpacity
             style={[styles.downloadButton, { backgroundColor: color }]}
+            onPress={onDownload}  // <-- Add this handler here
           >
             <Download size={16} color="#FFFFFF" />
           </TouchableOpacity>
-          
+
           {expanded ? (
             <ChevronUp size={20} color={theme.colors.secondaryText} />
           ) : (
@@ -59,7 +62,7 @@ export const AppVersionCard: React.FC<AppVersionCardProps> = ({
           )}
         </View>
       </TouchableOpacity>
-      
+
       {expanded && (
         <View style={styles.content}>
           <View style={styles.infoRow}>
@@ -70,7 +73,7 @@ export const AppVersionCard: React.FC<AppVersionCardProps> = ({
               {formatFileSize(version.size)}
             </Text>
           </View>
-          
+
           {version.minOSVersion && (
             <View style={styles.infoRow}>
               <Text style={[styles.infoLabel, { color: theme.colors.secondaryText }]}>
@@ -81,7 +84,7 @@ export const AppVersionCard: React.FC<AppVersionCardProps> = ({
               </Text>
             </View>
           )}
-          
+
           {version.maxOSVersion && (
             <View style={styles.infoRow}>
               <Text style={[styles.infoLabel, { color: theme.colors.secondaryText }]}>
@@ -92,7 +95,7 @@ export const AppVersionCard: React.FC<AppVersionCardProps> = ({
               </Text>
             </View>
           )}
-          
+
           <Text style={[styles.description, { color: theme.colors.text }]}>
             {version.localizedDescription}
           </Text>
