@@ -6,6 +6,8 @@ import { DEFAULT_REPOSITORIES } from './api';
 // Storage keys
 const REPOSITORIES_KEY = '@altstore-browser:repositories';
 const THEME_KEY = '@altstore-browser:theme';
+const ACCENT_COLOR_KEY = '@altstore-browser:accent-color';
+const DOWNLOAD_OPTION_KEY = '@altstore-browser:download-option';
 
 // Repository storage
 export const getStoredRepositories = async (): Promise<{ name: string, url: string }[]> => {
@@ -69,6 +71,46 @@ export const setStoredTheme = async (theme: ThemeType): Promise<void> => {
     await AsyncStorage.setItem(THEME_KEY, theme);
   } catch (error) {
     console.error('Error setting stored theme:', error);
+    throw error;
+  }
+};
+
+// Accent color storage
+export const getStoredAccentColor = async (): Promise<string> => {
+  try {
+    const color = await AsyncStorage.getItem(ACCENT_COLOR_KEY);
+    return color || '#007AFF'; // Default blue
+  } catch (error) {
+    console.error('Error getting stored accent color:', error);
+    return '#007AFF';
+  }
+};
+
+export const setStoredAccentColor = async (color: string): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(ACCENT_COLOR_KEY, color);
+  } catch (error) {
+    console.error('Error setting stored accent color:', error);
+    throw error;
+  }
+};
+
+// Download option storage
+export const getStoredDownloadOption = async (): Promise<string> => {
+  try {
+    const option = await AsyncStorage.getItem(DOWNLOAD_OPTION_KEY);
+    return option || 'default';
+  } catch (error) {
+    console.error('Error getting stored download option:', error);
+    return 'default';
+  }
+};
+
+export const setStoredDownloadOption = async (option: string): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(DOWNLOAD_OPTION_KEY, option);
+  } catch (error) {
+    console.error('Error setting stored download option:', error);
     throw error;
   }
 };
