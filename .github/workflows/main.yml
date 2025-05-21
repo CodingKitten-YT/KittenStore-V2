@@ -5,7 +5,8 @@ on:
 
 jobs:
   build-ios:
-    runs-on: macos-latest
+    runs-on: macos-13  # Prefer macos-13 for compatibility
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -17,9 +18,6 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-
-      - name: Prebuild native project (if using Expo managed workflow)
-        run: npx expo prebuild --platform ios
 
       - name: Install CocoaPods
         run: |
@@ -33,7 +31,7 @@ jobs:
           echo 'CODE_SIGN_ENTITLEMENTS=' >> ios/disable-signing.xcconfig
           echo 'CODE_SIGNING_ALLOWED=NO' >> ios/disable-signing.xcconfig
 
-      - name: Archive the app
+      - name: Build archive
         run: |
           xcodebuild \
             -workspace ios/kittenstore.xcworkspace \
@@ -42,7 +40,8 @@ jobs:
             -sdk iphoneos \
             -archivePath build/kittenstore.xcarchive \
             -xcconfig ios/disable-signing.xcconfig \
-            archive
+            archive \
+            | xcpretty
 
       - name: Create export options plist
         run: |
@@ -58,25 +57,20 @@ jobs:
             <string>manual</string>
             <key>compileBitcode</key>
             <false/>
-            <key>signingCertificate</key>
-            <string></string>
-            <key>signingIdentity</key>
-            <string></string>
-            <key>provisioningProfile</key>
-            <string></string>
           </dict>
           </plist>
           EOL
 
-      - name: Export IPA
+      - name: Export unsigned IPA
         run: |
           xcodebuild \
             -exportArchive \
             -archivePath build/kittenstore.xcarchive \
             -exportPath build/export \
-            -exportOptionsPlist exportOptions.plist
+            -exportOptionsPlist exportOptions.plist \
+            | xcpretty
 
-      - name: Upload unsigned IPA
+      - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: unsigned-ipa
