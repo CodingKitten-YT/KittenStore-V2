@@ -4,7 +4,7 @@
     "slug": "kittenstore",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icons/ios-light.png",
     "scheme": "kittenstore",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
