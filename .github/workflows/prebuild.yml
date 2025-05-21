@@ -1,0 +1,38 @@
+name: Prebuild iOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  prebuild-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Expo CLI
+        run: npm install -g expo-cli
+
+      - name: Run Expo Prebuild (iOS only)
+        run: npx expo prebuild --platform ios --non-interactive
+
+      - name: Commit and push prebuilt iOS
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ios
+          git diff --cached --quiet || git commit -m "chore: prebuild ios native project"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
