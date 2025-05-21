@@ -17,6 +17,7 @@ import { AddRepositoryForm } from '@/components/ui/AddRepositoryForm';
 import { PackagePlus, Moon, Sun, Smartphone } from 'lucide-react-native';
 import { ThemeType, ACCENT_COLORS, DOWNLOAD_OPTIONS } from '@/types/theme';
 import { getStoredDownloadOption, setStoredDownloadOption } from '@/utils/storage';
+import appJson from '../../app.json';
 
 export default function SettingsScreen() {
   const { theme, themeType, setThemeType, accentColor, setAccentColor } = useThemeContext();
@@ -194,14 +195,9 @@ export default function SettingsScreen() {
           <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
             <View style={styles.aboutItem}>
               <Text style={[styles.aboutLabel, { color: theme.colors.secondaryText }]}>Version</Text>
-              <Text style={[styles.aboutValue, { color: theme.colors.text }]}>1.0.0</Text>
-            </View>
-
-            <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
-
-            <View style={styles.aboutItem}>
-              <Text style={[styles.aboutLabel, { color: theme.colors.secondaryText }]}>Build</Text>
-              <Text style={[styles.aboutValue, { color: theme.colors.text }]}>2023.06.15</Text>
+              <Text style={[styles.aboutValue, { color: theme.colors.text }]}>
+                {appJson.expo.version}
+              </Text>
             </View>
           </View>
         </View>
