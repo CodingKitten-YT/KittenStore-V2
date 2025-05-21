@@ -49,10 +49,12 @@ export default function NewsScreen() {
       </View>
 
       {allNews.length === 0 ? (
-        <EmptyState
-          title="No News"
-          message="There are no news items to display."
-        />
+        <View style={styles.emptyContainer}>
+          <EmptyState
+            title="No News"
+            message="There are no news items to display."
+          />
+        </View>
       ) : (
         <FlatList
           data={allNews}
@@ -66,6 +68,7 @@ export default function NewsScreen() {
             />
           }
           contentContainerStyle={styles.listContent}
+          ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         />
       )}
     </SafeAreaView>
@@ -86,5 +89,11 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: 24,
+    paddingHorizontal: 0, // match index page (FlashList has no horizontal padding)
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
