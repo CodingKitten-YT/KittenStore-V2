@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-ios:
-    runs-on: macos-13  # Prefer macos-13 for compatibility
+    runs-on: macos-13  # More stable than macos-latest for iOS builds
 
     steps:
       - name: Checkout repo
@@ -40,21 +40,21 @@ jobs:
             -sdk iphoneos \
             -archivePath build/kittenstore.xcarchive \
             -xcconfig ios/disable-signing.xcconfig \
-            archive \
-            | xcpretty
+            archive | tee xcodebuild-archive.log
 
       - name: Create export options plist
         run: |
           cat > exportOptions.plist <<EOL
           <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
-            "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
             <key>method</key>
             <string>ad-hoc</string>
             <key>signingStyle</key>
             <string>manual</string>
+            <key>stripSwiftSymbols</key>
+            <true/>
             <key>compileBitcode</key>
             <false/>
           </dict>
@@ -68,9 +68,12 @@ jobs:
             -archivePath build/kittenstore.xcarchive \
             -exportPath build/export \
             -exportOptionsPlist exportOptions.plist \
-            | xcpretty
+            | tee xcodebuild-export.log
 
-      - name: Upload IPA
+      - name: List exported files (for debug)
+        run: ls -R build/export
+
+      - name: Upload unsigned IPA
         uses: actions/upload-artifact@v4
         with:
           name: unsigned-ipa
