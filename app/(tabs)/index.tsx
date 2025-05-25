@@ -11,9 +11,10 @@ import { FlashList } from '@shopify/flash-list';
 import { useThemeContext } from '@/context/ThemeContext';
 import { useRepositoryContext } from '@/context/RepositoryContext';
 import { SearchBar } from '@/components/ui/SearchBar';
+import { SearchFilters } from '@/components/ui/SearchFilters';
 import { AppCard } from '@/components/ui/AppCard';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { App, Repository } from '@/types/repository';
+import { App, Repository, AppCategory, SortOption } from '@/types/repository';
 import { RefreshCw } from 'lucide-react-native';
 
 type AppWithRepo = { app: App; repo: Repository };
@@ -27,29 +28,51 @@ export default function HomeScreen() {
   const { repositories, loading, error, refreshRepositories } = useRepositoryContext();
   
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<AppCategory>('All');
+  const [sortBy, setSortBy] = useState<SortOption>('name');
   const [refreshing, setRefreshing] = useState(false);
   
   const filteredApps = React.useMemo(() => {
-    if (!searchQuery) return [];
-
-    const query = searchQuery.toLowerCase();
-    const apps: AppWithRepo[] = [];
+    let apps: AppWithRepo[] = [];
 
     repositories.forEach(repo => {
       repo.apps.forEach(app => {
-        if (
-          app.name.toLowerCase().includes(query) ||
-          app.developerName.toLowerCase().includes(query) ||
-          app.subtitle.toLowerCase().includes(query) ||
-          app.localizedDescription.toLowerCase().includes(query)
-        ) {
+        // Apply search filter
+        const matchesSearch = !searchQuery || 
+          app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          app.developerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          app.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          app.localizedDescription.toLowerCase().includes(searchQuery.toLowerCase());
+
+        // Apply category filter
+        const matchesCategory = selectedCategory === 'All' || app.category === selectedCategory;
+
+        if (matchesSearch && matchesCategory) {
           apps.push({ app, repo });
         }
       });
     });
 
+    // Apply sorting
+    apps.sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return a.app.name.localeCompare(b.app.name);
+        case 'date':
+          const dateA = a.app.versionDate ? new Date(a.app.versionDate).getTime() : 0;
+          const dateB = b.app.versionDate ? new Date(b.app.versionDate).getTime() : 0;
+          return dateB - dateA;
+        case 'size':
+          const sizeA = a.app.size || 0;
+          const sizeB = b.app.size || 0;
+          return sizeB - sizeA;
+        default:
+          return 0;
+      }
+    });
+
     return apps;
-  }, [repositories, searchQuery]);
+  }, [repositories, searchQuery, selectedCategory, sortBy]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -60,7 +83,7 @@ export default function HomeScreen() {
   const listData: ListItem[] = React.useMemo(() => {
     const items: ListItem[] = [];
 
-    if (searchQuery) {
+    if (searchQuery || selectedCategory !== 'All') {
       if (filteredApps.length > 0) {
         items.push({ type: 'header', title: 'Search Results' });
         filteredApps.forEach(({ app, repo }) => {
@@ -79,7 +102,7 @@ export default function HomeScreen() {
     }
 
     return items;
-  }, [repositories, searchQuery, filteredApps]);
+  }, [repositories, searchQuery, selectedCategory, filteredApps]);
 
   if (loading && !refreshing && repositories.length === 0) {
     return (
@@ -133,6 +156,13 @@ export default function HomeScreen() {
         onClear={() => setSearchQuery('')}
       />
 
+      <SearchFilters
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+      />
+
       <FlashList
         data={listData}
         estimatedItemSize={100}
@@ -162,7 +192,6 @@ export default function HomeScreen() {
           />
         }
         contentContainerStyle={styles.listContent}
-        // Optional: add spacing between items
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
       />
     </SafeAreaView>

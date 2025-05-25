@@ -24,6 +24,7 @@ export interface App {
   iconURL: string;
   tintColor?: string;
   size?: number;
+  category?: string; // Added category field
   
   // Handle both formats of screenshots
   screenshots?: Screenshot[] | ScreenshotsByDevice;
@@ -82,3 +83,18 @@ export interface NewsItem {
   url: string;
   appID?: string;
 }
+
+export type SortOption = 'name' | 'date' | 'size';
+
+export const APP_CATEGORIES = [
+  'All',
+  'Utilities',
+  'Entertainment',
+  'Games',
+  'Social',
+  'Productivity',
+  'Development',
+  'Other'
+] as const;
+
+export type AppCategory = typeof APP_CATEGORIES[number];
