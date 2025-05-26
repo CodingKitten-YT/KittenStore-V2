@@ -46,89 +46,81 @@ export const AddRepositoryForm: React.FC<AddRepositoryFormProps> = ({ onClose })
   };
   
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.keyboardView}
-    >
-      <View style={[styles.container, { backgroundColor: theme.colors.cardBackground }]}>
-        <View style={styles.header}>
-          <Text style={[styles.title, { color: theme.colors.text }]}>
-            Add Repository
-          </Text>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={onClose}
-            disabled={loading}
-          >
-            <X size={20} color={theme.colors.secondaryText} />
-          </TouchableOpacity>
-        </View>
-        
-        <View style={styles.form}>
-          <View style={styles.inputContainer}>
-            <Text style={[styles.label, { color: theme.colors.secondaryText }]}>
-              Repository URL
-            </Text>
-            <TextInput
-              style={[
-                styles.input,
-                { 
-                  color: theme.colors.text,
-                  backgroundColor: theme.colors.searchBarBackground,
-                  borderColor: error ? theme.colors.notification : theme.colors.border
-                }
-              ]}
-              placeholder="https://example.com/repo.json"
-              placeholderTextColor={theme.colors.tertiaryText}
-              autoCapitalize="none"
-              keyboardType="url"
-              value={url}
-              onChangeText={(text) => {
-                setUrl(text);
-                if (error) setError(null);
-              }}
-              editable={!loading}
-            />
-            {error && (
-              <Text style={[styles.errorText, { color: theme.colors.notification }]}>
-                {error}
-              </Text>
-            )}
-          </View>
-        </View>
-        
+    <View style={[styles.container, { backgroundColor: theme.colors.cardBackground }]}>
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: theme.colors.text }]}>
+          Add Repository
+        </Text>
         <TouchableOpacity
-          style={[
-            styles.addButton,
-            { backgroundColor: theme.colors.primary },
-            loading && { opacity: 0.7 }
-          ]}
-          onPress={handleAddRepository}
+          style={styles.closeButton}
+          onPress={onClose}
           disabled={loading}
         >
-          {loading ? (
-            <ActivityIndicator color="#FFFFFF" />
-          ) : (
-            <>
-              <Plus size={16} color="#FFFFFF" style={styles.addIcon} />
-              <Text style={styles.addButtonText}>Add Repository</Text>
-            </>
-          )}
+          <X size={20} color={theme.colors.secondaryText} />
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+      
+      <View style={styles.form}>
+        <View style={styles.inputContainer}>
+          <Text style={[styles.label, { color: theme.colors.secondaryText }]}>
+            Repository URL
+          </Text>
+          <TextInput
+            style={[
+              styles.input,
+              { 
+                color: theme.colors.text,
+                backgroundColor: theme.colors.searchBarBackground,
+                borderColor: error ? theme.colors.notification : theme.colors.border
+              }
+            ]}
+            placeholder="https://example.com/repo.json"
+            placeholderTextColor={theme.colors.tertiaryText}
+            autoCapitalize="none"
+            keyboardType="url"
+            value={url}
+            onChangeText={(text) => {
+              setUrl(text);
+              if (error) setError(null);
+            }}
+            editable={!loading}
+          />
+          {error && (
+            <Text style={[styles.errorText, { color: theme.colors.notification }]}>
+              {error}
+            </Text>
+          )}
+        </View>
+      </View>
+      
+      <TouchableOpacity
+        style={[
+          styles.addButton,
+          { backgroundColor: theme.colors.primary },
+          loading && { opacity: 0.7 }
+        ]}
+        onPress={handleAddRepository}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#FFFFFF" />
+        ) : (
+          <>
+            <Plus size={16} color="#FFFFFF" style={styles.addIcon} />
+            <Text style={styles.addButtonText}>Add Repository</Text>
+          </>
+        )}
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  keyboardView: {
-    flex: 1,
-    justifyContent: 'center',
-  },
   container: {
     borderRadius: 16,
     padding: 24,
-    margin: 16,
+    maxWidth: 400,
+    width: '100%',
     ...Platform.select({
       ios: {
         shadowColor: '#000',

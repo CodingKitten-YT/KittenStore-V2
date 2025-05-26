@@ -45,6 +45,10 @@ export default function SettingsScreen() {
     await setStoredDownloadOption(optionId);
   };
 
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.header}>
@@ -203,10 +207,16 @@ export default function SettingsScreen() {
         </View>
       </ScrollView>
 
-      <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <AddRepositoryForm onClose={() => setModalVisible(false)} />
+      {/* UPDATED MODAL */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={closeModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContainer, { backgroundColor: theme.colors.cardBackground }]}>
+            <AddRepositoryForm onClose={closeModal} />
           </View>
         </View>
       </Modal>
@@ -306,14 +316,33 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Inter-Regular',
   },
-  modalContainer: {
+  // UPDATED MODAL STYLES
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 16,
+    paddingHorizontal: 16,
+    zIndex: 1000,
+    elevation: 1000,
   },
-  modalContent: {
-    borderRadius: 12,
-    overflow: 'hidden',
+  modalContainer: {
+    width: '100%',
+    maxWidth: 400,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 20,
+    zIndex: 1001,
   },
 });

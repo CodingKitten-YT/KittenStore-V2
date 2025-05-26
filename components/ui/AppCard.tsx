@@ -14,7 +14,7 @@ import { useRouter } from 'expo-router';
 import { Download } from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
-const CARD_MARGIN = 8;
+const CARD_MARGIN = 4;
 const CARD_WIDTH = width - (CARD_MARGIN * 4);
 
 interface AppCardProps {
