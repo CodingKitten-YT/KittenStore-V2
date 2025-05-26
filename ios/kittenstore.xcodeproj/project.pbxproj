@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		11AE8C1A04970A33347CDA8B /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F6C51A51948B692D3326B65 /* ExpoModulesProvider.swift */; };
+		0F682EC8A382D3B640865813 /* libPods-kittenstore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DE269385200A66F68919CA4 /* libPods-kittenstore.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		3490C90140ED6E83897F3E87 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 75AC12EDD9DAC01D37C26F45 /* PrivacyInfo.xcprivacy */; };
+		14100053B439ECB27F676EA4 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386A60625EA0830E75009AEE /* ExpoModulesProvider.swift */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		46CA0A124379A09D25372658 /* libPods-kittenstore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 194EAC8CBD1E7166802B6ADE /* libPods-kittenstore.a */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		D2E40016FE5E225152CD2F71 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EA6DC379ACB7B5F67832D82A /* PrivacyInfo.xcprivacy */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
@@ -20,13 +20,13 @@
 		13B07F961A680F5B00A75B9A /* kittenstore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kittenstore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = kittenstore/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = kittenstore/Info.plist; sourceTree = "<group>"; };
-		194EAC8CBD1E7166802B6ADE /* libPods-kittenstore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-kittenstore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		71317004D33E329ACAC1A858 /* Pods-kittenstore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kittenstore.release.xcconfig"; path = "Target Support Files/Pods-kittenstore/Pods-kittenstore.release.xcconfig"; sourceTree = "<group>"; };
-		75AC12EDD9DAC01D37C26F45 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = kittenstore/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
-		9F6C51A51948B692D3326B65 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-kittenstore/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		26C321A57A9F7D48D0D1DD45 /* Pods-kittenstore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kittenstore.debug.xcconfig"; path = "Target Support Files/Pods-kittenstore/Pods-kittenstore.debug.xcconfig"; sourceTree = "<group>"; };
+		2DE269385200A66F68919CA4 /* libPods-kittenstore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-kittenstore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		386A60625EA0830E75009AEE /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-kittenstore/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		57E1C52CBB83DEA86511763F /* Pods-kittenstore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kittenstore.release.xcconfig"; path = "Target Support Files/Pods-kittenstore/Pods-kittenstore.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = kittenstore/SplashScreen.storyboard; sourceTree = "<group>"; };
-		B350C3CD625E987EE7EEDFC8 /* Pods-kittenstore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kittenstore.debug.xcconfig"; path = "Target Support Files/Pods-kittenstore/Pods-kittenstore.debug.xcconfig"; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
+		EA6DC379ACB7B5F67832D82A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = kittenstore/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = kittenstore/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* kittenstore-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "kittenstore-Bridging-Header.h"; path = "kittenstore/kittenstore-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -37,7 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				46CA0A124379A09D25372658 /* libPods-kittenstore.a in Frameworks */,
+				0F682EC8A382D3B640865813 /* libPods-kittenstore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,15 +53,7 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				75AC12EDD9DAC01D37C26F45 /* PrivacyInfo.xcprivacy */,
-			);
-			name = kittenstore;
-			sourceTree = "<group>";
-		};
-		2BC46AE808E6EDC981985A55 /* kittenstore */ = {
-			isa = PBXGroup;
-			children = (
-				9F6C51A51948B692D3326B65 /* ExpoModulesProvider.swift */,
+				EA6DC379ACB7B5F67832D82A /* PrivacyInfo.xcprivacy */,
 			);
 			name = kittenstore;
 			sourceTree = "<group>";
@@ -70,17 +62,18 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				194EAC8CBD1E7166802B6ADE /* libPods-kittenstore.a */,
+				2DE269385200A66F68919CA4 /* libPods-kittenstore.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		756AEDA5CD64C48E991EB317 /* ExpoModulesProviders */ = {
+		6665C6BF764F230AC1D39FAC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				2BC46AE808E6EDC981985A55 /* kittenstore */,
+				26C321A57A9F7D48D0D1DD45 /* Pods-kittenstore.debug.xcconfig */,
+				57E1C52CBB83DEA86511763F /* Pods-kittenstore.release.xcconfig */,
 			);
-			name = ExpoModulesProviders;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -97,8 +90,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				ADA1883A5EDEDAC157A6924C /* Pods */,
-				756AEDA5CD64C48E991EB317 /* ExpoModulesProviders */,
+				6665C6BF764F230AC1D39FAC /* Pods */,
+				CD389E5646D43BE6CBEDD7B3 /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -113,16 +106,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		ADA1883A5EDEDAC157A6924C /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				B350C3CD625E987EE7EEDFC8 /* Pods-kittenstore.debug.xcconfig */,
-				71317004D33E329ACAC1A858 /* Pods-kittenstore.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
@@ -130,6 +113,22 @@
 			);
 			name = Supporting;
 			path = kittenstore/Supporting;
+			sourceTree = "<group>";
+		};
+		CD389E5646D43BE6CBEDD7B3 /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				E8AEBF641FE4C963B1E5104D /* kittenstore */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
+		E8AEBF641FE4C963B1E5104D /* kittenstore */ = {
+			isa = PBXGroup;
+			children = (
+				386A60625EA0830E75009AEE /* ExpoModulesProvider.swift */,
+			);
+			name = kittenstore;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,13 +139,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "kittenstore" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				411A14F29120EAF3CB3C093B /* [Expo] Configure project */,
+				1B9A32030E3247B161D73F55 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				BAD75A1DBBAF9449C3847D7D /* [CP] Embed Pods Frameworks */,
+				9FFB270105240D563FA59F79 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -196,7 +195,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				3490C90140ED6E83897F3E87 /* PrivacyInfo.xcprivacy in Resources */,
+				D2E40016FE5E225152CD2F71 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,7 +239,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		411A14F29120EAF3CB3C093B /* [Expo] Configure project */ = {
+		1B9A32030E3247B161D73F55 /* [Expo] Configure project */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -297,7 +296,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-kittenstore/Pods-kittenstore-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BAD75A1DBBAF9449C3847D7D /* [CP] Embed Pods Frameworks */ = {
+		9FFB270105240D563FA59F79 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -323,7 +322,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				11AE8C1A04970A33347CDA8B /* ExpoModulesProvider.swift in Sources */,
+				14100053B439ECB27F676EA4 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,18 +331,23 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B350C3CD625E987EE7EEDFC8 /* Pods-kittenstore.debug.xcconfig */;
+			baseConfigurationReference = 26C321A57A9F7D48D0D1DD45 /* Pods-kittenstore.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = kittenstore/kittenstore.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G7SJY6V3S5;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
 					"FB_SONARKIT_ENABLED=1",
 				);
 				INFOPLIST_FILE = kittenstore/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KittenStore;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -356,25 +360,35 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.anonymous.kittenstore;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hypackel.kittenstore;
 				PRODUCT_NAME = kittenstore;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "kittenstore/kittenstore-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 71317004D33E329ACAC1A858 /* Pods-kittenstore.release.xcconfig */;
+			baseConfigurationReference = 57E1C52CBB83DEA86511763F /* Pods-kittenstore.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = kittenstore/kittenstore.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G7SJY6V3S5;
 				INFOPLIST_FILE = kittenstore/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = KittenStore;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -387,11 +401,16 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = com.anonymous.kittenstore;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hypackel.kittenstore;
 				PRODUCT_NAME = kittenstore;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_OBJC_BRIDGING_HEADER = "kittenstore/kittenstore-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -451,10 +470,7 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -509,10 +525,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					" ",
-				);
+				OTHER_LDFLAGS = "$(inherited)  ";
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;

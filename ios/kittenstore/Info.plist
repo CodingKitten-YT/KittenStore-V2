@@ -28,7 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>kittenstore</string>
-          <string>com.anonymous.kittenstore</string>
+          <string>com.hypackel.kittenstore</string>
         </array>
       </dict>
     </array>

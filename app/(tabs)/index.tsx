@@ -13,7 +13,7 @@ import { useRepositoryContext } from '@/context/RepositoryContext';
 import { SearchBar } from '@/components/ui/SearchBar';
 import { AppCard } from '@/components/ui/AppCard';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { App, Repository } from '@/types/repository';
+import type { App, Repository } from '@/types/repository';
 import { RefreshCw } from 'lucide-react-native';
 
 type AppWithRepo = { app: App; repo: Repository };
@@ -30,10 +30,10 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   
   const filteredApps = React.useMemo(() => {
-    let apps: AppWithRepo[] = [];
+    const apps: AppWithRepo[] = [];
 
-    repositories.forEach(repo => {
-      repo.apps.forEach(app => {
+    for (const repo of repositories) {
+      for (const app of repo.apps) {
         // Apply search filter
         const matchesSearch = !searchQuery || 
           app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -44,8 +44,8 @@ export default function HomeScreen() {
         if (matchesSearch) {
           apps.push({ app, repo });
         }
-      });
-    });
+      }
+    }
 
     return apps;
   }, [repositories, searchQuery]);
@@ -62,19 +62,19 @@ export default function HomeScreen() {
     if (searchQuery) {
       if (filteredApps.length > 0) {
         items.push({ type: 'header', title: 'Search Results' });
-        filteredApps.forEach(({ app, repo }) => {
+        for (const { app, repo } of filteredApps) {
           items.push({ type: 'item', app, repo });
-        });
+        }
       }
     } else {
-      repositories.forEach(repo => {
+      for (const repo of repositories) {
         if (repo.apps.length > 0) {
           items.push({ type: 'header', title: repo.name });
-          repo.apps.forEach(app => {
+          for (const app of repo.apps) {
             items.push({ type: 'item', app, repo });
-          });
+          }
         }
-      });
+      }
     }
 
     return items;
@@ -120,18 +120,6 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <View style={styles.header}>
-        <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
-          KittenStore
-        </Text>
-      </View>
-
-      <SearchBar
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        onClear={() => setSearchQuery('')}
-      />
-
       <FlashList
         data={listData}
         estimatedItemSize={100}
@@ -147,11 +135,12 @@ export default function HomeScreen() {
                 </Text>
               </View>
             );
-          } else {
-            return (
-              <AppCard app={item.app} repoTintColor={item.repo.tintColor} />
-            );
           }
+          return (
+            <View style={{ alignItems: 'center' }}>
+              <AppCard app={item.app} repoTintColor={item.repo.tintColor} />
+            </View>
+          );
         }}
         refreshControl={
           <RefreshControl
@@ -162,6 +151,21 @@ export default function HomeScreen() {
         }
         contentContainerStyle={styles.listContent}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+        ListHeaderComponent={
+          <>
+            <View style={styles.header}>
+              <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
+                KittenStore
+              </Text>
+            </View>
+
+            <SearchBar
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onClear={() => setSearchQuery('')}
+            />
+          </>
+        }
       />
     </SafeAreaView>
   );

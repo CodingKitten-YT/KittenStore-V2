@@ -14,7 +14,8 @@
         "light": "./assets/icons/ios-light.png",
         "dark": "./assets/icons/ios-dark.png",
         "tinted": "./assets/icons/ios-tinted.png"
-      }
+      },
+      "bundleIdentifier": "com.hypackel.kittenstore"
     },
     "web": {
       "bundler": "metro",
