@@ -42,7 +42,13 @@ export const RepositoryProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           loadedRepos.push(repoData);
         } catch (error) {
           console.error(`Error loading repository ${repo.url}:`, error);
-          // Continue loading other repositories even if one fails
+          // Add a minimal repository object with the stored data
+          loadedRepos.push({
+            name: repo.name,
+            url: repo.url,
+            apps: [],
+            news: []
+          });
         }
       }
       

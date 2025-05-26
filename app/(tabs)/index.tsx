@@ -11,10 +11,9 @@ import { FlashList } from '@shopify/flash-list';
 import { useThemeContext } from '@/context/ThemeContext';
 import { useRepositoryContext } from '@/context/RepositoryContext';
 import { SearchBar } from '@/components/ui/SearchBar';
-import { SearchFilters } from '@/components/ui/SearchFilters';
 import { AppCard } from '@/components/ui/AppCard';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { App, Repository, AppCategory, SortOption } from '@/types/repository';
+import { App, Repository } from '@/types/repository';
 import { RefreshCw } from 'lucide-react-native';
 
 type AppWithRepo = { app: App; repo: Repository };
@@ -28,8 +27,6 @@ export default function HomeScreen() {
   const { repositories, loading, error, refreshRepositories } = useRepositoryContext();
   
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<AppCategory>('All');
-  const [sortBy, setSortBy] = useState<SortOption>('name');
   const [refreshing, setRefreshing] = useState(false);
   
   const filteredApps = React.useMemo(() => {
@@ -44,35 +41,14 @@ export default function HomeScreen() {
           app.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
           app.localizedDescription.toLowerCase().includes(searchQuery.toLowerCase());
 
-        // Apply category filter
-        const matchesCategory = selectedCategory === 'All' || app.category === selectedCategory;
-
-        if (matchesSearch && matchesCategory) {
+        if (matchesSearch) {
           apps.push({ app, repo });
         }
       });
     });
 
-    // Apply sorting
-    apps.sort((a, b) => {
-      switch (sortBy) {
-        case 'name':
-          return a.app.name.localeCompare(b.app.name);
-        case 'date':
-          const dateA = a.app.versionDate ? new Date(a.app.versionDate).getTime() : 0;
-          const dateB = b.app.versionDate ? new Date(b.app.versionDate).getTime() : 0;
-          return dateB - dateA;
-        case 'size':
-          const sizeA = a.app.size || 0;
-          const sizeB = b.app.size || 0;
-          return sizeB - sizeA;
-        default:
-          return 0;
-      }
-    });
-
     return apps;
-  }, [repositories, searchQuery, selectedCategory, sortBy]);
+  }, [repositories, searchQuery]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -83,7 +59,7 @@ export default function HomeScreen() {
   const listData: ListItem[] = React.useMemo(() => {
     const items: ListItem[] = [];
 
-    if (searchQuery || selectedCategory !== 'All') {
+    if (searchQuery) {
       if (filteredApps.length > 0) {
         items.push({ type: 'header', title: 'Search Results' });
         filteredApps.forEach(({ app, repo }) => {
@@ -102,7 +78,7 @@ export default function HomeScreen() {
     }
 
     return items;
-  }, [repositories, searchQuery, selectedCategory, filteredApps]);
+  }, [repositories, searchQuery, filteredApps]);
 
   if (loading && !refreshing && repositories.length === 0) {
     return (
@@ -154,13 +130,6 @@ export default function HomeScreen() {
         value={searchQuery}
         onChangeText={setSearchQuery}
         onClear={() => setSearchQuery('')}
-      />
-
-      <SearchFilters
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
       />
 
       <FlashList
