@@ -84,9 +84,9 @@ export interface NewsItem {
   appID?: string;
 }
 
-export type SortOption = 'name' | 'date' | 'size';
+type SortOption = 'name' | 'date' | 'size';
 
-export const APP_CATEGORIES = [
+const APP_CATEGORIES = [
   'All',
   'Utilities',
   'Entertainment',
@@ -97,4 +97,4 @@ export const APP_CATEGORIES = [
   'Other'
 ] as const;
 
-export type AppCategory = typeof APP_CATEGORIES[number];
+type AppCategory = typeof APP_CATEGORIES[number];

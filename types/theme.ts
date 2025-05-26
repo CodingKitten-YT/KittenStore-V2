@@ -1,6 +1,6 @@
 export type ThemeType = 'light' | 'dark' | 'system';
 
-export type AccentColor = {
+type AccentColor = {
   id: string;
   label: string;
   color: string;
@@ -17,7 +17,7 @@ export const ACCENT_COLORS: AccentColor[] = [
   { id: 'teal', label: 'Teal', color: '#5AC8FA' },
 ];
 
-export type DownloadOption = {
+type DownloadOption = {
   id: string;
   label: string;
   getUrl: (downloadUrl: string) => string;
