@@ -31,7 +31,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="news"
         options={{
           title: 'News',
@@ -39,7 +39,7 @@ export default function TabLayout() {
             <Newspaper size={size} color={color} />
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="settings"
         options={{

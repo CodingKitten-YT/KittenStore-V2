@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import { useThemeContext } from '../../context/ThemeContext';
 import { App } from '../../types/repository';
-import { useRouter } from 'expo-router';
 import { Download } from 'lucide-react-native';
+import { handleDownload } from '@/utils/download';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 4;
@@ -24,17 +24,17 @@ interface AppCardProps {
 
 export const AppCard: React.FC<AppCardProps> = ({ app, repoTintColor }) => {
   const { theme } = useThemeContext();
-  const router = useRouter();
 
   const version =
     app.version || (app.versions && app.versions.length > 0 ? app.versions[0].version : 'Unknown');
   const tintColor = app.tintColor || repoTintColor || theme.colors.primary;
 
   const handlePress = () => {
-    router.push({
-      pathname: '/app/[id]',
-      params: { id: app.bundleIdentifier, app: JSON.stringify(app) },
-    });
+    // This is for navigating the main card, keep this.
+    // router.push({
+    //   pathname: '/app/[id]',
+    //   params: { id: app.bundleIdentifier, app: JSON.stringify(app) },
+    // });
   };
 
   return (
@@ -67,7 +67,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, repoTintColor }) => {
           </View>
           <TouchableOpacity 
             style={[styles.downloadButton, { backgroundColor: tintColor }]}
-            onPress={handlePress}
+            onPress={() => app?.downloadURL && handleDownload(app.downloadURL)}
           >
             <Download size={20} color="#FFFFFF" />
           </TouchableOpacity>

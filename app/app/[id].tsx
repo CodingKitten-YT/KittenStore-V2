@@ -16,10 +16,7 @@ import { AppVersionCard } from '@/components/ui/AppVersionCard';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { App, AppVersion } from '@/types/repository';
 import { ChevronLeft, Download } from 'lucide-react-native';
-import * as WebBrowser from 'expo-web-browser';
-import { getStoredDownloadOption } from '@/utils/storage';
-import { DOWNLOAD_OPTIONS } from '@/types/theme';
-import { Linking } from 'react-native';
+import { handleDownload } from '@/utils/download';
 
 export default function AppDetailScreen() {
   const { theme } = useThemeContext();
@@ -28,10 +25,9 @@ export default function AppDetailScreen() {
   const params = useLocalSearchParams();
 
   const [expandedVersion, setExpandedVersion] = useState<string | null>(null);
-  const [downloadOption, setDownloadOption] = useState('default');
 
   useEffect(() => {
-    getStoredDownloadOption().then(setDownloadOption);
+    // getStoredDownloadOption().then(setDownloadOption); // This is now handled in the utility
   }, []);
 
   let app: App | undefined;
@@ -53,29 +49,6 @@ export default function AppDetailScreen() {
       }
     }
   }
-
-  const getDownloadUrl = (url: string) => {
-    const option = DOWNLOAD_OPTIONS.find(opt => opt.id === downloadOption);
-    return option ? option.getUrl(url) : url;
-  };
-
-  // Update parameter to accept string | undefined
-  const handleDownload = async (url: string | undefined) => {
-    if (!url) return;
-
-    const formattedUrl = getDownloadUrl(url);
-
-    try {
-      const canOpen = await Linking.canOpenURL(formattedUrl);
-      if (canOpen) {
-        await Linking.openURL(formattedUrl);
-      } else {
-        await WebBrowser.openBrowserAsync(url);
-      }
-    } catch (e) {
-      console.error('Failed to open URL:', e);
-    }
-  };
 
   if (!app) {
     return (
@@ -172,7 +145,6 @@ export default function AppDetailScreen() {
                 styles.downloadButton,
                 { backgroundColor: app.tintColor || theme.colors.primary }
               ]}
-              // Check if downloadURL exists before calling handleDownload
               onPress={() => app?.downloadURL && handleDownload(app.downloadURL)}
             >
               <Download size={18} color="#FFFFFF" style={styles.downloadIcon} />
@@ -203,8 +175,9 @@ export default function AppDetailScreen() {
             <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
               App Permissions
             </Text>
+            {/* biome-ignore lint/correctness/useJsxKeyInIterable: False positive */}
             {app.permissions.map((permission, index) => (
-              <View key={index} style={styles.permissionGroup}>
+              <View key={permission.type + index} style={styles.permissionGroup}>
                 <Text style={[styles.permissionGroupTitle, { color: theme.colors.text }]}>
                   {permission.type}
                 </Text>
@@ -227,9 +200,10 @@ export default function AppDetailScreen() {
                 <Text style={[styles.permissionGroupTitle, { color: theme.colors.text }]}>
                   Entitlements
                 </Text>
+                {/* biome-ignore lint/correctness/useJsxKeyInIterable: False positive */}
                 {app.appPermissions.entitlements?.map((entitlement, index) => (
                   <Text 
-                    key={index}
+                    key={entitlement + index}
                     style={[styles.permissionItem, { color: theme.colors.secondaryText }]}
                   >
                     • {entitlement}
@@ -244,7 +218,7 @@ export default function AppDetailScreen() {
                   Privacy
                 </Text>
                 {Object.entries(app.appPermissions.privacy).map(([key, value], index) => (
-                  <View key={index} style={styles.privacyItem}>
+                  <View key={key} style={styles.privacyItem}>
                     <Text style={[styles.privacyKey, { color: theme.colors.text }]}>
                       {key}:
                     </Text>
@@ -265,7 +239,7 @@ export default function AppDetailScreen() {
             </Text>
             {appVersions.map((version, index) => (
               <AppVersionCard
-                key={index}
+                key={version.version}
                 version={version}
                 expanded={expandedVersion === version.version}
                 onToggleExpand={() => toggleVersionExpand(version.version)}
@@ -387,7 +361,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   description: {
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: 'Inter-Regular',
     lineHeight: 22,
     paddingHorizontal: 16,
@@ -396,36 +370,36 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   permissionGroup: {
-    marginBottom: 16,
     paddingHorizontal: 16,
+    marginBottom: 12,
   },
   permissionGroupTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Inter-SemiBold',
     marginBottom: 8,
   },
   permissionItem: {
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: 'Inter-Regular',
-    lineHeight: 20,
-    marginLeft: 8,
+    marginBottom: 4,
   },
   privacyItem: {
-    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 4,
   },
   privacyKey: {
-    fontSize: 14,
-    fontFamily: 'Inter-Medium',
-    marginBottom: 2,
+    fontSize: 16,
+    fontFamily: 'Inter-SemiBold',
+    marginRight: 4,
   },
   privacyValue: {
-    fontSize: 14,
+    flex: 1,
+    fontSize: 16,
     fontFamily: 'Inter-Regular',
-    lineHeight: 20,
-    marginLeft: 8,
   },
   versionsSection: {
-    marginBottom: 32,
+    marginBottom: 24,
     paddingHorizontal: 16,
   },
 });
