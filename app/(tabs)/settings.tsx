@@ -16,17 +16,24 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { AddRepositoryForm } from '@/components/ui/AddRepositoryForm';
 import { PackagePlus, Moon, Sun, Smartphone } from 'lucide-react-native';
 import { ThemeType, ACCENT_COLORS, DOWNLOAD_OPTIONS } from '@/types/theme';
-import { getStoredDownloadOption, setStoredDownloadOption } from '@/utils/storage';
+import { getStoredDownloadOption, setStoredDownloadOption, getStoredCustomScheme, setStoredCustomScheme } from '@/utils/storage';
 import appJson from '../../app.json';
+import { TextInput } from 'react-native';
 
 export default function SettingsScreen() {
   const { theme, themeType, setThemeType, accentColor, setAccentColor } = useThemeContext();
   const { repositories, removeRepository } = useRepositoryContext();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDownloadOption, setSelectedDownloadOption] = React.useState('default');
+  const [customScheme, setCustomScheme] = React.useState('hyquiz');
 
   React.useEffect(() => {
-    getStoredDownloadOption().then(setSelectedDownloadOption);
+    const loadSettings = async () => {
+      getStoredDownloadOption().then(setSelectedDownloadOption);
+      getStoredCustomScheme().then(setCustomScheme);
+    };
+
+    loadSettings();
   }, []);
 
   const handleRemoveRepository = (url: string) => {
@@ -83,7 +90,7 @@ export default function SettingsScreen() {
                 <RepositoryCard
                   key={repo.url}
                   repository={repo}
-                  onRemove={() => handleRemoveRepository(repo.url!)}
+                  onRemove={() => repo.url && handleRemoveRepository(repo.url)}
                 />
               );
             })
@@ -114,11 +121,35 @@ export default function SettingsScreen() {
                     </View>
                   )}
                 </TouchableOpacity>
-                {index < DOWNLOAD_OPTIONS.length - 1 && (
+                {index < DOWNLOAD_OPTIONS.length - 1 && option.id !== 'custom' && (
                   <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
                 )}
               </React.Fragment>
             ))}
+
+            {selectedDownloadOption === 'custom' && (
+              <View style={styles.customSchemeContainer}>
+                <Text style={[styles.settingLabel, { color: theme.colors.text }]}>Custom URL Scheme:</Text>
+                <TextInput
+                  style={[
+                    styles.input,
+                    { 
+                      color: theme.colors.text,
+                      backgroundColor: theme.colors.searchBarBackground,
+                      borderColor: theme.colors.border
+                    }
+                  ]}
+                  placeholder="e.g., myscheme"
+                  placeholderTextColor={theme.colors.tertiaryText}
+                  autoCapitalize="none"
+                  value={customScheme}
+                  onChangeText={(text: string) => {
+                    setCustomScheme(text);
+                    setStoredCustomScheme(text);
+                  }}
+                />
+              </View>
+            )}
           </View>
         </View>
 
@@ -344,5 +375,14 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 20,
     zIndex: 1001,
+  },
+  customSchemeContainer: {
+    padding: 16,
+  },
+  input: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
   },
 });

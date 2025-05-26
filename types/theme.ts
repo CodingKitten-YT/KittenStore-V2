@@ -17,11 +17,11 @@ export const ACCENT_COLORS: AccentColor[] = [
   { id: 'teal', label: 'Teal', color: '#5AC8FA' },
 ];
 
-type DownloadOption = {
+export interface DownloadOption {
   id: string;
   label: string;
-  getUrl: (downloadUrl: string) => string;
-};
+  getUrl: (downloadUrl: string, customScheme?: string) => string;
+}
 
 export const DOWNLOAD_OPTIONS: DownloadOption[] = [
   { 
@@ -53,6 +53,11 @@ export const DOWNLOAD_OPTIONS: DownloadOption[] = [
     id: 'tanarasign', 
     label: 'TanaraSign',
     getUrl: (url) => `opium://install=${encodeURIComponent(url)}`
+  },
+  {
+    id: 'custom',
+    label: 'Custom',
+    getUrl: (url, customScheme) => customScheme ? `${customScheme}://install?url=${encodeURIComponent(url)}` : url
   }
 ];
 

@@ -1,6 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Repository } from '../types/repository';
-import { ThemeType } from '../types/theme';
 import { DEFAULT_REPOSITORIES } from './api';
 
 // Storage keys
@@ -8,6 +6,7 @@ const REPOSITORIES_KEY = '@altstore-browser:repositories';
 const THEME_KEY = '@altstore-browser:theme';
 const ACCENT_COLOR_KEY = '@altstore-browser:accent-color';
 const DOWNLOAD_OPTION_KEY = '@altstore-browser:download-option';
+const CUSTOM_SCHEME_KEY = '@altstore-browser:custom-scheme';
 
 // Repository storage
 export const getStoredRepositories = async (): Promise<{ name: string, url: string }[]> => {
@@ -56,17 +55,17 @@ export const removeRepository = async (url: string): Promise<void> => {
 };
 
 // Theme storage
-export const getStoredTheme = async (): Promise<ThemeType> => {
+export const getStoredTheme = async () => {
   try {
     const theme = await AsyncStorage.getItem(THEME_KEY);
-    return (theme as ThemeType) || 'system';
+    return theme || 'system';
   } catch (error) {
     console.error('Error getting stored theme:', error);
     return 'system';
   }
 };
 
-export const setStoredTheme = async (theme: ThemeType): Promise<void> => {
+export const setStoredTheme = async (theme: string): Promise<void> => {
   try {
     await AsyncStorage.setItem(THEME_KEY, theme);
   } catch (error) {
@@ -111,6 +110,26 @@ export const setStoredDownloadOption = async (option: string): Promise<void> => 
     await AsyncStorage.setItem(DOWNLOAD_OPTION_KEY, option);
   } catch (error) {
     console.error('Error setting stored download option:', error);
+    throw error;
+  }
+};
+
+// Custom Scheme storage
+export const getStoredCustomScheme = async (): Promise<string> => {
+  try {
+    const scheme = await AsyncStorage.getItem(CUSTOM_SCHEME_KEY);
+    return scheme || '';
+  } catch (error) {
+    console.error('Error getting stored custom scheme:', error);
+    return '';
+  }
+};
+
+export const setStoredCustomScheme = async (scheme: string): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(CUSTOM_SCHEME_KEY, scheme);
+  } catch (error) {
+    console.error('Error setting stored custom scheme:', error);
     throw error;
   }
 };
