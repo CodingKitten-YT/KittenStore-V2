@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { Theme, ThemeType } from '../types/theme';
 import { getStoredTheme, setStoredTheme, getStoredAccentColor, setStoredAccentColor } from '../utils/storage';
-import { darkTheme, lightTheme } from '../utils/themes';
+import { darkTheme, lightTheme, oledTheme } from '../utils/themes';
 
 interface ThemeContextType {
   theme: Theme;
@@ -22,6 +22,12 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export const useThemeContext = () => useContext(ThemeContext);
 
+// Helper function to validate and cast theme type
+const validateThemeType = (value: string): ThemeType => {
+  const validThemes: ThemeType[] = ['light', 'dark', 'oled', 'system'];
+  return validThemes.includes(value as ThemeType) ? (value as ThemeType) : 'system';
+};
+
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const systemColorScheme = useColorScheme();
   const [themeType, setThemeType] = useState<ThemeType>('system');
@@ -33,7 +39,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         getStoredTheme(),
         getStoredAccentColor()
       ]);
-      setThemeType(savedTheme);
+      
+      // Validate and set the theme type
+      setThemeType(validateThemeType(savedTheme));
       setAccentColor(savedColor);
     };
     
@@ -50,9 +58,21 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     await setStoredAccentColor(newColor);
   };
 
-  const baseTheme = themeType === 'system'
-    ? systemColorScheme === 'dark' ? darkTheme : lightTheme
-    : themeType === 'dark' ? darkTheme : lightTheme;
+  const getBaseTheme = () => {
+    switch (themeType) {
+      case 'light':
+        return lightTheme;
+      case 'dark':
+        return darkTheme;
+      case 'oled':
+        return oledTheme;
+      case 'system':
+      default:
+        return systemColorScheme === 'dark' ? darkTheme : lightTheme;
+    }
+  };
+
+  const baseTheme = getBaseTheme();
 
   const theme: Theme = {
     ...baseTheme,

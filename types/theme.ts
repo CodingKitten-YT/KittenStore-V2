@@ -1,4 +1,4 @@
-export type ThemeType = 'light' | 'dark' | 'system';
+export type ThemeType = 'light' | 'dark' | 'oled' | 'system';
 
 type AccentColor = {
   id: string;
@@ -57,7 +57,7 @@ export const DOWNLOAD_OPTIONS: DownloadOption[] = [
   {
     id: 'custom',
     label: 'Custom',
-    getUrl: (url, customScheme) => customScheme ? `${customScheme}://install?url=${encodeURIComponent(url)}` : url
+    getUrl: (url, customScheme) => customScheme ? `${customScheme}://` : url
   }
 ];
 

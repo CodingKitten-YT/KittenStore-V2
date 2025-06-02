@@ -41,6 +41,25 @@ export const darkTheme: Theme = {
   }
 };
 
+export const oledTheme: Theme = {
+  dark: true,
+  colors: {
+    primary: '#007AFF',
+    background: '#000000',
+    card: '#000000',
+    text: '#FFFFFF',
+    border: '#1C1C1E',
+    notification: '#FF453A',
+    secondaryText: '#8E8E93',
+    tertiaryText: '#48484A',
+    cardBackground: '#000000',
+    tint: '#007AFF',
+    tabBarBackground: '#000000',
+    tabBarInactive: '#8E8E93',
+    searchBarBackground: '#1C1C1E',
+  },
+};
+
 // Use theme based on preference
 const useTheme = (themePreference: ThemeType): Theme => {
   const systemTheme = useColorScheme();

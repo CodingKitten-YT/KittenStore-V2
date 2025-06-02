@@ -29,6 +29,8 @@ export const AppCard: React.FC<AppCardProps> = ({ app, repoTintColor }) => {
 
   const version =
     app.version || (app.versions && app.versions.length > 0 ? app.versions[0].version : 'Unknown');
+  
+  // Use theme.colors.primary (which contains the selected accent color) as the primary choice
   const tintColor = app.tintColor || repoTintColor || theme.colors.primary;
 
   const handlePress = () => {
@@ -67,7 +69,7 @@ export const AppCard: React.FC<AppCardProps> = ({ app, repoTintColor }) => {
             </Text>
           </View>
           <TouchableOpacity 
-            style={[styles.downloadButton, { backgroundColor: tintColor }]}
+            style={[styles.downloadButton, { backgroundColor: theme.colors.primary }]}
             onPress={() => app?.downloadURL && handleDownload(app.downloadURL)}
           >
             <Download size={20} color="#FFFFFF" />

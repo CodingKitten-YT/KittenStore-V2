@@ -14,7 +14,7 @@ import { useRepositoryContext } from '@/context/RepositoryContext';
 import { RepositoryCard } from '@/components/ui/RepositoryCard';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { AddRepositoryForm } from '@/components/ui/AddRepositoryForm';
-import { PackagePlus, Moon, Sun, Smartphone } from 'lucide-react-native';
+import { PackagePlus, Moon, Sun, Smartphone, Eclipse } from 'lucide-react-native';
 import { ThemeType, ACCENT_COLORS, DOWNLOAD_OPTIONS } from '@/types/theme';
 import { getStoredDownloadOption, setStoredDownloadOption, getStoredCustomScheme, setStoredCustomScheme } from '@/utils/storage';
 import appJson from '../../app.json';
@@ -160,9 +160,26 @@ export default function SettingsScreen() {
           </View>
 
           <View style={[styles.card, { backgroundColor: theme.colors.cardBackground }]}>
-            {(['light', 'dark', 'system'] as ThemeType[]).map((type) => {
-              const Icon = type === 'light' ? Sun : type === 'dark' ? Moon : Smartphone;
-              const label = type.charAt(0).toUpperCase() + type.slice(1);
+            {(['light', 'dark', 'oled', 'system'] as ThemeType[]).map((type, index) => {
+              const getIcon = () => {
+                switch (type) {
+                  case 'light': return Sun;
+                  case 'dark': return Moon;
+                  case 'oled': return Eclipse;
+                  case 'system': return Smartphone;
+                  default: return Smartphone;
+                }
+              };
+              
+              const getLabel = () => {
+                switch (type) {
+                  case 'oled': return 'OLED';
+                  default: return type.charAt(0).toUpperCase() + type.slice(1);
+                }
+              };
+
+              const Icon = getIcon();
+              const label = getLabel();
 
               return (
                 <React.Fragment key={type}>
@@ -177,7 +194,7 @@ export default function SettingsScreen() {
                       </View>
                     )}
                   </TouchableOpacity>
-                  {type !== 'system' && (
+                  {index < 3 && ( // Show separator for all except the last item
                     <View style={[styles.separator, { backgroundColor: theme.colors.border }]} />
                   )}
                 </React.Fragment>
